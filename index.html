@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="MSP: Perception as Sufficiency, Not Accuracy">
+  <meta name="description" content="Perception for manipulation, formulated as a calibrated belief over the minimal statistic that preserves all and only the information that changes action outcomes. An analytic grasp score computed on a reconstructed geometry scores below chance on curved objects; MSP reaches 0.891 on the same objects, with a distribution-free coverage certificate.">
+  <meta name="keywords" content="manipulation, grasping, information bottleneck, sufficient statistic, conformal prediction, calibrated abstention, identifiability, active perception, edge robotics, IoT">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="author" content="Md Selim Sarowar">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="MSP: Perception as Sufficiency, Not Accuracy">
+  <meta property="og:description" content="Estimate what changes the outcome, not what the object looks like. A minimal-rate, certifiable grasping interface for the network edge.">
+  <meta property="og:url" content="https://physical-agi.github.io/MSP-FRAMEWORK/">
+  <meta property="og:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
+  <meta property="og:image:alt" content="The MSP framework: RGB-D observations, a belief encoder, an outcome head, and an inference block that certifies, acts, senses and adapts">
+  <meta property="article:section" content="Robotics">
+  <meta property="article:tag" content="grasping">
+  <meta property="article:tag" content="conformal prediction">
+  <meta property="article:tag" content="information bottleneck">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MSP: Perception as Sufficiency, Not Accuracy">
+  <meta name="twitter:description" content="An analytic grasp score on a reconstructed geometry is anti-correlated with the truth on curved objects. MSP reaches 0.891 there, and carries a coverage certificate.">
+  <meta name="twitter:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
+  <meta name="twitter:image:alt" content="The MSP framework diagram">
+
+  <!-- Academic / Google Scholar -->
+  <meta name="citation_title" content="Perception as Sufficiency, Not Accuracy: A Minimal-Rate, Certifiable Grasping Interface for the Network Edge">
+  <meta name="citation_author" content="Sarowar, Md Selim">
+  <meta name="citation_author" content="Kim, Sungho">
+  <meta name="citation_journal_title" content="IEEE Internet of Things Journal">
+  <meta name="citation_publication_date" content="2027">
+
+  <!-- Additional SEO -->
+  <meta name="theme-color" content="#1F5C8B">
+  <meta name="msapplication-TileColor" content="#1F5C8B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="canonical" href="https://physical-agi.github.io/MSP-FRAMEWORK/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+  <title>MSP: Perception as Sufficiency, Not Accuracy</title>
+
+  <link rel="icon" type="image/png" href="static/images/robot.png">
+  <link rel="apple-touch-icon" href="static/images/robot.png">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+  <noscript>
+    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  </noscript>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Perception as Sufficiency, Not Accuracy: A Minimal-Rate, Certifiable Grasping Interface for the Network Edge",
+    "author": [
+      { "@type": "Person", "name": "Md Selim Sarowar" },
+      { "@type": "Person", "name": "Sungho Kim" }
+    ],
+    "description": "Perception for manipulation formulated as estimating a calibrated belief over the minimal statistic that preserves all and only the information that changes action outcomes.",
+    "keywords": ["manipulation", "grasping", "information bottleneck", "conformal prediction", "identifiability", "edge robotics"],
+    "abstract": "Two world states are equivalent when every admissible action produces the same outcome distribution. Geometry is recoverable only up to that equivalence, and accuracy beyond the sufficiency resolution is both unrecoverable and unnecessary. Grasp selection, distribution-free abstention, active perception and test-time adaptation all fall out of two learned modules as inference procedures, with no reconstruction, no dynamics rollout and no reinforcement learning.",
+    "isAccessibleForFree": true,
+    "codeRepository": "https://github.com/s-elim/msp-framework",
+    "about": [
+      { "@type": "Thing", "name": "Robot Grasping" },
+      { "@type": "Thing", "name": "Uncertainty Quantification" }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<nav class="ai-nav" id="ai-nav" aria-label="Section navigation">
+  <div class="ai-nav-inner">
+    <a class="ai-nav-brand" href="#top">MSP<span> Framework</span></a>
+    <button class="ai-nav-toggle" id="ai-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="ai-nav-links" id="ai-nav-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#method">Method</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#deploy">Deployment</a>
+      <a href="#certificate">Certificate</a>
+      <a href="#rate">Rate</a>
+      <a href="#objects">Objects</a>
+      <a href="#ablations">Ablations</a>
+      <a href="#limits">Limits</a>
+      <a href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+  <div class="ai-progress" id="ai-progress"></div>
+</nav>
+
+<main id="main-content">
+  <a id="top"></a>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Perception as Sufficiency, Not Accuracy</h1>
+            <p class="is-size-5" style="color:var(--text-secondary);margin:-0.75rem 0 1.25rem">
+              A Minimal-Rate, Certifiable Grasping Interface for the Network Edge
+            </p>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Md Selim Sarowar</span>,
+              <span class="author-block">Sungho Kim<sup>&dagger;</sup></span>
+            </div>
+            <p class="ai-anon-note" style="margin-top:0.5rem">
+              <sup>&dagger;</sup>Corresponding author. Yeungnam University.
+            </p>
+
+            <div class="ai-venue-badge">Under review &middot; IEEE Internet of Things Journal</div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <span class="button is-normal is-rounded is-dark is-pending">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv soon</span>
+                  </span>
+                </span>
+
+                <span class="link-block">
+                  <span class="button is-normal is-rounded is-dark is-pending">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper soon</span>
+                  </span>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://github.com/s-elim/msp-framework" target="_blank" rel="noopener"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-quote-left"></i></span>
+                    <span>Cite</span>
+                  </a>
+                </span>
+              </div>
+              <p class="ai-anon-note">
+                Two learned modules. No reconstruction, no dynamics rollout, no reinforcement learning.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaser -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <figure class="ai-figure" style="margin-top:0">
+          <img src="static/images/fig_framework.png" class="ai-zoomable"
+               alt="The MSP framework: a hidden world state produces RGB-D observations from networked cameras; a belief encoder returns a posterior over a 64-dimensional code; an outcome head maps code and action to success, margin and slip; an inference block marginalises, certifies by split conformal, acts risk-aversely, senses a new view and adapts after a probe">
+          <figcaption>
+            <strong>Perception estimates a belief over a code, not a pose.</strong> The world state
+            <em>x</em>&nbsp;=&nbsp;(<em>S</em>, <em>T</em>, &phi;) collects shape, pose and physics, and only the
+            first two are visible in an image at all. A per-view backbone pools into a posterior
+            <em>q<sub>&theta;</sub></em>(<em>z</em>&nbsp;|&nbsp;<em>o</em>) trained by a variational information
+            bottleneck: minimise the rate <em>R</em> while paying a weighted distortion on the outcomes that decide
+            what happens. Every deployment behaviour, certified abstention, risk-averse action, active sensing and
+            post-probe adaptation, is an inference procedure over the same two frozen modules. Nothing in the
+            objective asks for a reconstruction or a pose, and nothing retrains at deployment.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key numbers -->
+  <section class="section ai-stats-section">
+    <div class="container is-max-desktop">
+      <div class="ai-stats">
+        <div class="ai-stat">
+          <div class="ai-stat-value" data-count-to="0.473" data-decimals="3">0.000</div>
+          <div class="ai-stat-label">Analytic grasp score on curved objects, below chance</div>
+        </div>
+        <div class="ai-stat">
+          <div class="ai-stat-value" data-count-to="0.891" data-decimals="3">0.000</div>
+          <div class="ai-stat-label">MSP on the same objects</div>
+        </div>
+        <div class="ai-stat">
+          <div class="ai-stat-value" data-count-to="0.897" data-decimals="3">0.000</div>
+          <div class="ai-stat-label">Empirical coverage at a 0.90 target, n = 16,000</div>
+        </div>
+        <div class="ai-stat">
+          <div class="ai-stat-value" data-count-to="0.53" data-decimals="2" data-suffix=" nats">0.00 nats</div>
+          <div class="ai-stat-label">Rate the code costs on the link, per scene</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section hero is-light" id="abstract">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              A manipulation system on a network edge cannot ship pixels and cannot ship certainty, so the question
+              is what the smallest thing it can ship is. We formulate perception for manipulation as estimating a
+              <strong>calibrated belief over the minimal statistic that preserves all and only the information that
+              changes action outcomes</strong>, rather than an accurate pose. Two world states are equivalent when
+              every admissible action produces the same outcome distribution; geometry is recoverable only up to that
+              equivalence, and accuracy beyond the sufficiency resolution is both unrecoverable and unnecessary. The
+              formulation is instantiated by two learned modules trained under a variational information bottleneck,
+              and grasp selection, distribution-free abstention, active perception and test-time adaptation all fall
+              out as inference procedures over them: no reconstruction, no dynamics rollout, no reinforcement
+              learning. Measured on 11,979 executable grasps over 13 scanned LIBERO groceries, an analytic grasp
+              score computed on a reconstructed geometry does not predict what actually happens: it reaches within-scene
+              AUC 0.548 against MSP's 0.639, and over the grasps on objects whose reconstruction is genuinely wrong
+              it falls <em>below chance</em> at 0.473 against MSP's 0.891, meaning the grasps it prefers are the ones
+              that fail. The
+              certificate holds on real RGB-D images: empirical coverage 0.897 against a 0.90 target over 16,000 test
+              points, with certified precision 0.744 reported separately because it is a different estimand. The code
+              that carries this costs 0.534 nats per scene, and the rate-distortion frontier shows the outcome the
+              budget purchases falling monotonically as the rate rises.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method -->
+  <section class="section" id="method">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Four Stages, Two Modules</h2>
+      <p class="ai-section-intro">
+        Everything at deployment is inference over the same two frozen modules. Pick a stage.
+      </p>
+
+      <div class="ai-loop">
+        <div class="ai-loop-stages" role="tablist" aria-label="Pipeline stages">
+          <button class="ai-stage" role="tab" aria-selected="true" data-stage="observe" style="--stage-c:var(--stage-observe)">
+            <span class="ai-stage-num">1</span>
+            <span>
+              <span class="ai-stage-name">Observe</span>
+              <span class="ai-stage-sub">Networked RGB-D, true state never available</span>
+            </span>
+          </button>
+          <div class="ai-stage-arrow" role="presentation" aria-hidden="true"><i class="fas fa-arrow-down"></i></div>
+
+          <button class="ai-stage" role="tab" aria-selected="false" data-stage="encode" style="--stage-c:var(--stage-encode)">
+            <span class="ai-stage-num">2</span>
+            <span>
+              <span class="ai-stage-name">Encode a belief</span>
+              <span class="ai-stage-sub">A posterior over a 64-d code, not a pose</span>
+            </span>
+          </button>
+          <div class="ai-stage-arrow" role="presentation" aria-hidden="true"><i class="fas fa-arrow-down"></i></div>
+
+          <button class="ai-stage" role="tab" aria-selected="false" data-stage="score" style="--stage-c:var(--stage-score)">
+            <span class="ai-stage-num">3</span>
+            <span>
+              <span class="ai-stage-name">Score outcomes</span>
+              <span class="ai-stage-sub">Success, margin, slip, marginalised over the belief</span>
+            </span>
+          </button>
+          <div class="ai-stage-arrow" role="presentation" aria-hidden="true"><i class="fas fa-arrow-down"></i></div>
+
+          <button class="ai-stage" role="tab" aria-selected="false" data-stage="certify" style="--stage-c:var(--stage-certify)">
+            <span class="ai-stage-num">4</span>
+            <span>
+              <span class="ai-stage-name">Certify, act or abstain</span>
+              <span class="ai-stage-sub">Split conformal, distribution-free coverage</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="ai-loop-detail" id="ai-loop-detail">
+          <div class="ai-loop-eyebrow"></div>
+          <h3></h3>
+          <p class="ai-loop-lead"></p>
+          <p class="ai-loop-body"></p>
+          <div class="ai-loop-spec"></div>
+        </div>
+      </div>
+
+      <h2 class="title is-3 has-text-centered" style="margin-top:3.5rem">What the Theory Buys</h2>
+      <p class="ai-section-intro">Four claims, and the limit of each one stated next to it.</p>
+
+      <div class="ai-tabs" role="tablist">
+        <button class="ai-tab is-active" role="tab" aria-selected="true" data-tab="sufficiency">Sufficiency</button>
+        <button class="ai-tab" role="tab" aria-selected="false" data-tab="identifiability">Identifiability</button>
+        <button class="ai-tab" role="tab" aria-selected="false" data-tab="coverage">Coverage</button>
+        <button class="ai-tab" role="tab" aria-selected="false" data-tab="active">Active perception</button>
+      </div>
+
+      <div class="ai-tab-panel is-active" role="tabpanel" data-panel="sufficiency">
+        <div class="ai-note-grid">
+          <div class="ai-note">
+            <h3>The statement</h3>
+            <p>Under the Markov chain <em>Z</em>&ndash;<em>O</em>&ndash;<em>X</em>&ndash;<em>Y</em>, the data
+              processing inequality bounds what any code can carry. The minimal sufficient statistic is the
+              information-bottleneck optimum in the limit of a large sufficiency budget, so the code that survives
+              compression is exactly the one that changes outcomes.</p>
+          </div>
+          <div class="ai-note">
+            <h3>What follows practically</h3>
+            <p>There is no reconstruction loss and no pose loss anywhere in the objective. The rate is the number of
+              nats the belief costs to transmit, which on the network edge is the quantity that actually bills.</p>
+          </div>
+        </div>
+        <p class="ai-table-note">
+          The budget is not uniform across outcome channels. Success, margin and slip have log-likelihoods on
+          incommensurate scales, and putting equal weight on them starves the one channel the decision rule reads.
+          The ablation section shows what that costs: the model stops ranking grasps entirely.
+        </p>
+      </div>
+
+      <div class="ai-tab-panel" role="tabpanel" data-panel="identifiability">
+        <div class="ai-note-grid">
+          <div class="ai-note">
+            <h3>The statement</h3>
+            <p>States are identifiable only up to the kernel of the outcome Jacobian. The predicted subspace is
+              compared against one measured independently, by perturbing the state and recording which directions
+              leave real outcomes unchanged. Where the theorem has content the prediction is essentially exact, with
+              principal angles under one degree.</p>
+          </div>
+          <div class="ai-note">
+            <h3>Where it says nothing</h3>
+            <p>For 6 of 13 objects the Jacobian has full rank and the kernel is trivial: nothing is continuously
+              unidentifiable and the theorem makes no claim at all. That is a real limit on its reach, and the object
+              table below marks it per object rather than reporting an average that hides it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-tab-panel" role="tabpanel" data-panel="coverage">
+        <div class="ai-note-grid">
+          <div class="ai-note">
+            <h3>The statement</h3>
+            <p>Split conformal prediction over a held-out calibration fold gives marginal coverage without any
+              distributional assumption. Actions whose prediction set is the singleton {1} form the certified set;
+              an empty set is an abstention.</p>
+          </div>
+          <div class="ai-note">
+            <h3>The estimand trap</h3>
+            <p>Coverage is Pr(succ in the set) over <em>all</em> test points. Certified precision is
+              Pr(succ = 1 | the action was certified). They are different quantities and reporting the second while
+              claiming the first is the standard way a conformal result gets overclaimed. Both are on this page.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-tab-panel" role="tabpanel" data-panel="active">
+        <div class="ai-note-grid">
+          <div class="ai-note">
+            <h3>Second views help</h3>
+            <p>Acquiring one more viewpoint cuts ambiguity by 13.8% on average. Choosing <em>which</em> viewpoint,
+              selected on one Monte-Carlo estimate of the information gain and scored on an independent one, adds
+              2.9 points for 16.7% in total, over 512 scenes and 8 candidate views.</p>
+          </div>
+          <div class="ai-note">
+            <h3>The number we refuse to quote</h3>
+            <p>Selecting and scoring on the <em>same</em> estimate reports 130.8%, of which 114.1 points are the
+              winner's curse. We report the honest estimate and print the inflated one beside it so the size of the
+              selection bias in this kind of experiment is visible.</p>
+          </div>
+        </div>
+        <p class="ai-table-note">
+          Most of the benefit is in taking a second view at all rather than in choosing it well, and we say so
+          rather than attributing the whole reduction to the policy.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Evidence -->
+  <section class="section hero is-light" id="evidence">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">The Proxy Fails Where Its Geometry Is Wrong</h2>
+      <p class="ai-section-intro">
+        Ferrari-Canny epsilon is computed on an oriented bounding box, roughly the geometry a pose-and-shape pipeline
+        recovers. The outcome is a rigid-body lift against the object's true mesh.
+      </p>
+
+      <div class="ax-callout">
+        <strong>The natural control group.</strong> Six of the thirteen groceries have a single-box collision hull.
+        Butter, cookies and cream cheese <em>are</em> boxes, so the bounding-box reconstruction is exact for them and
+        there is no hallucinated surface. The remaining seven are cans, bottles and cartons. The thesis predicts the
+        analytic proxy works where its geometry is right and fails where it is not, and it does. On a parametric box
+        this experiment is impossible, because reconstruction and truth are the same object and the gap is
+        identically zero. That is why real meshes are not a nicety.
+      </div>
+
+      <figure class="ai-figure">
+        <img src="static/images/fig_geometry_split.png" class="ai-zoomable"
+             alt="Bar chart: on box-shaped objects Ferrari-Canny reaches AUC 0.574 and MSP 0.797; on curved objects Ferrari-Canny falls to 0.473, below the chance line, while MSP rises to 0.891">
+        <figcaption>
+          <strong>AUC against the real lift outcome, split by whether the reconstruction is exact.</strong> On curved
+          objects the analytic proxy scores below chance: it is anti-correlated with the truth, systematically
+          preferring the grasps that fail. 7,194 grasps on box-shaped objects and 4,785 on curved ones.
+        </figcaption>
+      </figure>
+
+      <div class="ai-table-wrap" style="margin-top:1rem">
+        <table class="ai-table">
+          <caption class="ai-caption">11,979 executable grasps on 13 scanned LIBERO groceries, success rate 0.597</caption>
+          <thead>
+            <tr>
+              <th class="ai-th-text" scope="col">Predictor</th>
+              <th scope="col">Pooled AUC</th>
+              <th class="ai-col-avg" scope="col">Within-scene AUC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Ferrari-Canny &epsilon; on the reconstruction</th><td>0.542</td><td class="ai-col-avg">0.548</td></tr>
+            <tr class="ai-ours"><th scope="row">MSP, belief trained on outcomes <span class="ai-ours-tag">Ours</span></th><td>0.876</td><td class="ai-col-avg">0.639</td></tr>
+            <tr><th scope="row">Chance</th><td>0.500</td><td class="ai-col-avg">0.500</td></tr>
+            <tr><th scope="row">Oracle: an MLP on the <em>true</em> state</th><td class="ai-na">&ndash;</td><td class="ai-col-avg">0.685</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ai-table-note">
+        <strong>Read the right column.</strong> Within-scene AUC ranks the candidate grasps of a single settled pose,
+        so it cannot be won by recognising the object. The pooled column can be: per-object base rates on this corpus
+        span 0.043 to 0.999, and a model that has learned nothing but object identity still scores about 0.72 pooled.
+        The oracle bound matters too: no perception system can beat 0.685 within-scene here, so MSP's 0.639 is
+        against a ceiling, not against 1.0.
+      </p>
+    </div>
+  </section>
+
+  <!-- Deployment -->
+  <section class="section" id="deploy">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">When It Commits, Does the Object Come Up?</h2>
+      <p class="ai-section-intro">
+        The system ranks a scene's candidate grasps, executes its favourite, and acts only when confident enough.
+        Sweeping that confidence threshold sweeps the act rate. Drag it.
+      </p>
+
+      <div class="ax-chart-card ax-chart-host" id="ax-risk"></div>
+
+      <div class="ax-actrate">
+        <div class="ax-actrate-head"><span>Act rate</span><b id="ax-act-val">0.25</b></div>
+        <input type="range" id="ax-act" min="1" max="100" step="1" value="25" aria-label="Act rate">
+      </div>
+
+      <div class="ax-duel">
+        <div class="ax-duel-cell is-msp">
+          <div class="ax-duel-name">MSP</div>
+          <div class="ax-duel-val" id="ax-duel-msp">0.984</div>
+          <div class="ax-duel-sub">of executed grasps lifted the object</div>
+        </div>
+        <div class="ax-duel-cell is-proxy">
+          <div class="ax-duel-name">Ferrari-Canny</div>
+          <div class="ax-duel-val" id="ax-duel-proxy">0.503</div>
+          <div class="ax-duel-sub">of executed grasps lifted the object</div>
+        </div>
+        <div class="ax-duel-cell">
+          <div class="ax-duel-name">Random pick</div>
+          <div class="ax-duel-val">0.623</div>
+          <div class="ax-duel-sub">the control that does no ranking at all</div>
+        </div>
+      </div>
+
+      <div class="ax-callout is-null" id="ax-risk-verdict"></div>
+
+      <p class="ai-table-note">
+        1,997 scenes with at least one executable grasp. A useful score rises as it grows more selective; the
+        analytic proxy's <em>falls</em>, and only reaches the random-pick control by committing to nearly every
+        scene. It is not mis-calibrated, which a monotone transform would fix. It is uninformative, and on the
+        objects whose geometry it gets wrong it is worse than that.
+      </p>
+    </div>
+  </section>
+
+  <!-- Certificate -->
+  <section class="section hero is-light" id="certificate">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">The Certificate Holds on Images</h2>
+      <p class="ai-section-intro">
+        Split conformal calibration on a held-out fold, evaluated over 16,000 test points on real RGB-D. Pick the
+        risk level.
+      </p>
+
+      <div class="ax-pills">
+        <button class="ax-pill" data-alpha="0.05">&alpha; = 0.05</button>
+        <button class="ax-pill is-active" data-alpha="0.1">&alpha; = 0.10</button>
+        <button class="ax-pill" data-alpha="0.2">&alpha; = 0.20</button>
+      </div>
+
+      <div class="ax-cert">
+        <div class="ax-cert-item">
+          <div class="ax-cert-label">Target coverage</div>
+          <div class="ax-cert-val" id="ax-cert-target">0.90</div>
+          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-target"></span></div>
+        </div>
+        <div class="ax-cert-item is-key">
+          <div class="ax-cert-label">Empirical coverage</div>
+          <div class="ax-cert-val" id="ax-cert-coverage">0.8973</div>
+          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-coverage"></span></div>
+        </div>
+        <div class="ax-cert-item">
+          <div class="ax-cert-label">Certified precision</div>
+          <div class="ax-cert-val" id="ax-cert-precision">0.7435</div>
+          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-precision"></span></div>
+        </div>
+        <div class="ax-cert-item">
+          <div class="ax-cert-label">Abstention rate</div>
+          <div class="ax-cert-val" id="ax-cert-abstention">0.7430</div>
+          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-abstention"></span></div>
+        </div>
+        <div class="ax-cert-item">
+          <div class="ax-cert-label">Certified action fraction</div>
+          <div class="ax-cert-val" id="ax-cert-certified">0.2347</div>
+          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-certified"></span></div>
+        </div>
+      </div>
+
+      <div class="ax-callout" id="ax-cert-gap"></div>
+
+      <div class="ax-callout">
+        <strong>A high abstention rate is not a bug.</strong> From a photograph you cannot see friction, mass or the
+        centre of mass, so on most scenes no action can be <em>certified</em> at the requested confidence and the
+        system declines rather than guessing. That is the framework being honest about what an image contains.
+        Bringing the number down is exactly what active touch is for, and the tables above show what a second
+        viewpoint already buys.
+      </div>
+
+      <figure class="ai-figure">
+        <img src="static/images/fig_coverage.png" class="ai-zoomable"
+             alt="Two panels: empirical coverage tracks the nominal target along the diagonal at 0.80, 0.90 and 0.95; and the cost of the certificate, where both certified precision and abstention rate rise with the target">
+        <figcaption>
+          <strong>Coverage tracks its target, and the certificate has a price.</strong> Tightening the risk level
+          raises certified precision and raises the abstention rate with it: the system buys confidence by acting
+          less often, which is the trade a deployed manipulator should be allowed to choose.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Rate -->
+  <section class="section" id="rate">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">What the Link Has to Carry</h2>
+      <p class="ai-section-intro">
+        The sufficiency budget &beta; multiplies the relevance term, so a larger &beta; purchases sufficiency at the
+        price of rate. Hover a point for its coverage and abstention.
+      </p>
+
+      <div class="ax-chart-card ax-chart-host" id="ax-frontier"></div>
+
+      <p class="ai-table-note">
+        The purchased outcome is success: <em>D<sub>succ</sub></em> falls monotonically as the rate rises, from
+        0.656 at 0.004 nats to 0.412 at 3.29 nats. The unweighted total over all three channels need not, because it
+        is dominated by the margin and slip likelihoods the budget deliberately sacrifices, and reporting only that
+        total would make a working budget look broken. Coverage holds near 0.90 across the whole sweep, so the
+        certificate is not being paid for out of the rate.
+      </p>
+
+      <div class="ax-cards">
+        <div class="ax-card">
+          <div class="ax-card-eyebrow">Why an edge system cares</div>
+          <h3>0.53 nats per scene is what the belief costs to send</h3>
+          <p>The rate is not a regulariser we chose for convenience: it is the mutual information between the
+            observation and the code, which on a networked manipulator is the payload. A pipeline that ships a
+            reconstructed mesh or a dense pose distribution ships orders of magnitude more, and the evidence above
+            says the extra bits do not change the decision.</p>
+        </div>
+        <div class="ax-card">
+          <div class="ax-card-eyebrow">The cheap end of the frontier</div>
+          <h3>At 0.004 nats the certificate still covers 0.896</h3>
+          <p>The lowest-rate point on the sweep holds its coverage target and abstains slightly less than the
+            deployed point. Rate and calibration are close to independent here, which is the property that makes the
+            interface deployable on a constrained link rather than only in a lab.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Objects -->
+  <section class="section hero is-light" id="objects">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Thirteen Objects, One Table</h2>
+      <p class="ai-section-intro">
+        Base success rates span 0.043 to 0.999, which is the entire reason a pooled AUC cannot be trusted here.
+        Filter by geometry; click a header to sort.
+      </p>
+
+      <div class="ax-pills">
+        <button class="ax-pill is-active" data-geom="all">All 13</button>
+        <button class="ax-pill" data-geom="box">Box-shaped, reconstruction exact</button>
+        <button class="ax-pill" data-geom="curved">Curved, reconstruction wrong</button>
+      </div>
+
+      <div class="ax-readout">
+        <div>
+          <div class="ax-readout-val" id="ax-obj-n">13</div>
+          <div class="ax-readout-label">Objects in view</div>
+        </div>
+        <div>
+          <div class="ax-readout-val" id="ax-obj-wa">0.000</div>
+          <div class="ax-readout-label">Ferrari-Canny, mean over rankable objects</div>
+        </div>
+        <div>
+          <div class="ax-readout-val" id="ax-obj-wm">0.000</div>
+          <div class="ax-readout-label">MSP, mean over rankable objects</div>
+        </div>
+      </div>
+
+      <p class="ai-table-note" id="ax-obj-note" style="text-align:center"></p>
+
+      <div class="ai-table-wrap">
+        <table class="ai-table" id="ax-obj-table">
+          <thead>
+            <tr>
+              <th class="ai-sortable ai-th-text" data-sort="name" scope="col">Object <i class="fas fa-sort"></i></th>
+              <th class="ai-sortable" data-sort="base" scope="col">Base rate <i class="fas fa-sort"></i></th>
+              <th class="ai-sortable" data-sort="wa" scope="col">Ferrari-Canny <i class="fas fa-sort"></i></th>
+              <th class="ai-sortable" data-sort="wm" scope="col">MSP <i class="fas fa-sort"></i></th>
+              <th class="ai-sortable" data-sort="rank" scope="col">rank J <i class="fas fa-sort"></i></th>
+              <th class="ai-sortable" data-sort="nullDim" scope="col">dim ker J <i class="fas fa-sort"></i></th>
+              <th class="ai-sortable" data-sort="angle" scope="col">Max angle &deg; <i class="fas fa-sort"></i></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <p class="ai-table-note">
+        The two AUC columns are <strong>within-scene</strong>, averaged over the scenes where the ranking question is
+        well posed, and the three figures above them are macro-means over the objects in view, which is a different
+        aggregation from the corpus-level 0.548 and 0.639 quoted earlier: a scene needs at least three executable grasps and both a success and a failure. An object lifted
+        successfully 99.9% of the time supplies almost none, so it is marked <em>not rankable</em> rather than given
+        an AUC over two or three scenes that would read as a catastrophic failure. The last three columns are the
+        identifiability diagnostic: where the kernel of the outcome Jacobian is non-trivial the predicted
+        unidentifiable subspace matches the independently measured one to under a degree, and where the Jacobian has
+        full rank the theorem makes no claim and the cell is a dash.
+      </p>
+
+      <figure class="ai-figure">
+        <img src="static/images/fig_per_object.png" class="ai-zoomable"
+             alt="Per-object chart: grey bars give base success rates from 0.04 to 0.999, with Ferrari-Canny and MSP within-scene AUC markers above them; three objects are labelled no rankable scenes">
+        <figcaption>
+          <strong>Base rates span the whole range, which is why a pooled AUC cannot be trusted.</strong> Objects with
+          too few rankable scenes get their base-rate bar and no marker, which is the honest thing to draw: the
+          question cannot be asked of them.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Ablations -->
+  <section class="section" id="ablations">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">What Each Piece Is Worth</h2>
+      <p class="ai-section-intro">
+        Scored on the within-scene axis, because a pooled AUC cannot referee these: a model that has learned nothing
+        but object identity still scores about 0.72 pooled, so every ablation would look harmless.
+      </p>
+
+      <div class="ax-abl" id="ax-ablations"></div>
+
+      <p class="ai-table-note">
+        The dotted line is chance. <em>Response</em> is the standard deviation of the score across a scene's
+        candidate grasps: when it collapses towards zero the model has stopped attending to the action and is
+        emitting one number per scene.
+      </p>
+
+      <div class="ax-cards">
+        <div class="ax-card">
+          <div class="ax-card-eyebrow">The budget is load-bearing</div>
+          <h3>A uniform budget destroys the ranker, and a pooled AUC would hide it</h3>
+          <p>Placing an equal multiplier on outcome channels whose log-likelihoods live on incommensurate scales
+            starves success, the one outcome the decision rule reads. Within-scene AUC falls to 0.511 and the action
+            response collapses to 0.002: the model has stopped ranking grasps entirely. Its pooled AUC is still
+            0.710, which is why the axis matters.</p>
+        </div>
+        <div class="ax-card">
+          <div class="ax-card-eyebrow">Perception is doing the work</div>
+          <h3>Replacing the belief with a constant costs everything</h3>
+          <p>With the code ablated the head can only exploit an action prior, and it lands at 0.506 within-scene,
+            chance. This is the control for the reviewer concern that the head could ignore the belief and memorise
+            action priors, and it does not survive.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Limits -->
+  <section class="section hero is-light" id="limits">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Evidence Boundaries</h2>
+      <p class="ai-section-intro">
+        What the measurements do not cover, stated rather than left for a reader to discover.
+      </p>
+
+      <div class="ai-limits">
+        <div class="ai-limit">
+          <h3>The identifiability theorem is often vacuous</h3>
+          <p>For 6 of 13 objects the outcome Jacobian has full rank and its kernel is trivial, so nothing is
+            continuously unidentifiable and the theorem says nothing at all. Where it does have content the
+            prediction matches an independently measured subspace to under a degree, but the reach is genuinely
+            limited and the per-object table shows it case by case.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>Three objects cannot be scored at all</h3>
+          <p>Milk, orange juice and bbq sauce are lifted so reliably that almost no scene contains both a success and
+            a failure, so the within-scene ranking question is not well posed for them. They are marked, not
+            imputed.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>The certificate is marginal, not conditional</h3>
+          <p>Coverage holds over the test distribution as a whole. It is not a per-object or per-scene guarantee, and
+            certified precision, the number an operator actually feels, is a different estimand that we report
+            separately rather than in place of it.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>Abstention is high at the deployed point</h3>
+          <p>0.743 at &alpha; = 0.1. The framework declines on most scenes because a photograph does not contain
+            friction or mass. Active touch is the intended remedy and the equations for it exist, but the touch loop
+            is not wired into the deployed system.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>Active perception is evaluated in simulation over 8 views</h3>
+          <p>512 scenes, 8 candidate viewpoints, ambiguity reduction rather than end-to-end success. The honest
+            estimate is 16.7% and most of that, 13.8 points, comes from taking a second view at all rather than from
+            choosing it.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>One corpus, one gripper, no real robot</h3>
+          <p>Thirteen scanned LIBERO groceries under a rigid-body lift criterion. Real meshes rather than parametric
+            primitives is what makes the reconstruction-gap experiment possible at all, but nothing here measures
+            sim-to-real transfer of the belief or the certificate.</p>
+        </div>
+      </div>
+
+      <figure class="ai-figure">
+        <img src="static/images/fig_within_scene.png" class="ai-zoomable"
+             alt="Bar chart of within-scene AUC: Ferrari-Canny on the reconstruction at 0.548 and MSP on outcomes at 0.639, with a chance line at 0.5">
+        <figcaption>
+          <strong>The headline contrast on the axis that cannot be gamed.</strong> Drawn within-scene, never pooled:
+          MSP once scored 0.716 pooled while being unable to rank two grasps of the same object, which is the
+          measurement error this axis exists to prevent.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section" id="bibtex">
+    <div class="container is-max-desktop content">
+      <div class="bibtex-header">
+        <h2 class="title">BibTeX</h2>
+        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
+          <i class="fas fa-copy"></i>
+          <span class="copy-text">Copy</span>
+        </button>
+      </div>
+      <pre id="bibtex-code"><code>@misc{sarowar2027msp,
+title   = {Perception as Sufficiency, Not Accuracy: A Minimal-Rate, Certifiable Grasping Interface for the Network Edge},
+author  = {Md Selim Sarowar and Sungho Kim},
+year    = {2027},
+note    = {Under review, IEEE Internet of Things Journal},
+url     = {https://physical-agi.github.io/MSP-FRAMEWORK/}
+}</code></pre>
+      <p class="ai-table-note">
+        Placeholder entry. It will be replaced with the journal entry once the paper is accepted.
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          Code at <a href="https://github.com/s-elim/msp-framework" target="_blank" rel="noopener">s-elim/msp-framework</a>.
+          This page is built from
+          <a href="https://github.com/Physical-AGI/MSP-FRAMEWORK" target="_blank" rel="noopener">Physical-AGI/MSP-FRAMEWORK</a>.
+        </p>
+        <p>
+          Page template adapted from <a href="https://nerfies.github.io" target="_blank" rel="noopener">Nerfies</a>,
+          licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+        </p>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<button class="scroll-to-top" onclick="scrollToTop()" aria-label="Scroll back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<div class="ai-lightbox" id="ai-lightbox" role="dialog" aria-modal="true" aria-label="Enlarged figure">
+  <button class="ai-lightbox-close" id="ai-lightbox-close" aria-label="Close">&times;</button>
+  <img id="ai-lightbox-img" src="" alt="">
+  <p class="ai-lightbox-caption" id="ai-lightbox-caption"></p>
+</div>
+
+</body>
+</html>
