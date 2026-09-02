@@ -2288,3 +2288,25 @@ section[id] { scroll-margin-top: 4.5rem; }
   .ax-abl-resp { display: none; }
   .ax-duel { grid-template-columns: 1fr; }
 }
+
+/* ---- Page width -----------------------------------------------------------
+   Match the portfolio's container (--container: 1700px in
+   s-elim.github.io/_sass/theme/_tokens.scss). Bulma caps .is-max-desktop at
+   960px, which letterboxed the figures, tables and charts. This file loads
+   after bulma.min.css, so the same specificity wins on source order.
+
+   Running text does not want 1700px, so paragraph blocks keep a readable
+   measure while figures and tables take the full container. Delete the second
+   rule to let prose run the full width too. */
+.container.is-max-desktop,
+.container.is-max-widescreen {
+  max-width: 1700px;
+}
+
+.content.has-text-justified,
+.content.has-text-centered,
+.ai-section-intro,
+.gv-section-intro {
+  max-width: 1100px;
+  margin-inline: auto;
+}
