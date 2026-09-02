@@ -6,7 +6,7 @@
 
   <!-- Primary Meta Tags -->
   <meta name="title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta name="description" content="Perception for manipulation, formulated as a calibrated belief over the minimal statistic that preserves all and only the information that changes action outcomes. An analytic grasp score computed on a reconstructed geometry scores below chance on curved objects; MSP reaches 0.891 on the same objects, with a distribution-free coverage certificate.">
+  <meta name="description" content="A policy-free, action-conditioned outcome bottleneck learns what changes an action outcome instead of what an object looks like. Grasp selection, conformal filtering, active viewpoint choice and test-time adaptation all run over one encoder and one outcome head.">>
   <meta name="keywords" content="manipulation, grasping, information bottleneck, sufficient statistic, conformal prediction, calibrated abstention, identifiability, active perception, edge robotics, IoT">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
@@ -15,7 +15,7 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta property="og:description" content="Estimate what changes the outcome, not what the object looks like. A minimal-rate, certifiable grasping interface for the network edge.">
+  <meta property="og:description" content="Estimate what changes the outcome, not what the object looks like. A 512-byte interface, 288x smaller than one RGB-D frame, at 16 ms per CPU decision.">>
   <meta property="og:url" content="https://physical-agi.github.io/MSP-FRAMEWORK/">
   <meta property="og:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
   <meta property="og:image:alt" content="The MSP framework: RGB-D observations, a belief encoder, an outcome head, and an inference block that certifies, acts, senses and adapts">
@@ -27,7 +27,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta name="twitter:description" content="An analytic grasp score on a reconstructed geometry is anti-correlated with the truth on curved objects. MSP reaches 0.891 there, and carries a coverage certificate.">
+  <meta name="twitter:description" content="An analytic grasp score on a reconstructed geometry is anti-correlated with the truth on curved objects. Ours reaches 0.891 there, in 512 bytes per scene.">>
   <meta name="twitter:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
   <meta name="twitter:image:alt" content="The MSP framework diagram">
 
@@ -230,24 +230,24 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              A manipulation system on a network edge cannot ship pixels and cannot ship certainty, so the question
-              is what the smallest thing it can ship is. We formulate perception for manipulation as estimating a
-              <strong>calibrated belief over the minimal statistic that preserves all and only the information that
-              changes action outcomes</strong>, rather than an accurate pose. Two world states are equivalent when
-              every admissible action produces the same outcome distribution; geometry is recoverable only up to that
-              equivalence, and accuracy beyond the sufficiency resolution is both unrecoverable and unnecessary. The
-              formulation is instantiated by two learned modules trained under a variational information bottleneck,
-              and grasp selection, distribution-free abstention, active perception and test-time adaptation all fall
-              out as inference procedures over them: no reconstruction, no dynamics rollout, no reinforcement
-              learning. Measured on 11,979 executable grasps over 13 scanned LIBERO groceries, an analytic grasp
-              score computed on a reconstructed geometry does not predict what actually happens: it reaches within-scene
-              AUC 0.548 against MSP's 0.639, and over the grasps on objects whose reconstruction is genuinely wrong
-              it falls <em>below chance</em> at 0.473 against MSP's 0.891, meaning the grasps it prefers are the ones
-              that fail. The
-              certificate holds on real RGB-D images: empirical coverage 0.897 against a 0.90 target over 16,000 test
-              points, with certified precision 0.744 reported separately because it is a different estimand. The code
-              that carries this costs 0.534 nats per scene, and the rate-distortion frontier shows the outcome the
-              budget purchases falling monotonically as the rate rises.
+              Networked manipulation endpoints couple perception to actuation across compute- and
+              bandwidth-limited links, yet commonly exchange dense geometric states optimized for fidelity
+              rather than action outcomes. We learn a stochastic representation with a policy-free,
+              action-conditioned <strong>outcome bottleneck</strong>: the marginal outcome log-loss supplies the
+              distortion and a KL term regularizes the rate. The construction is motivated by
+              <strong>the minimal statistic that preserves the outcome distribution of every admissible
+              action</strong>, while the implemented finite model is evaluated as a rate-regularized mixture
+              predictor. One encoder and one outcome head then support grasp selection, singleton conformal
+              filtering, active viewpoint selection and latent test-time adaptation: no reconstruction, no
+              dynamics rollout, no reinforcement learning. A finite-probe theorem identifies the local level-set
+              tangent space with the null space of an outcome Jacobian; the synthetic oracle verifies it, and on
+              scanned objects an analytic surrogate agrees with measured simulator invariances to within
+              0.56&deg; of principal angle. Across 11,979 simulated grasps on 13 scanned LIBERO groceries, a
+              reconstructed-geometry wrench score reaches 0.542 AUC against lift success and falls below chance
+              on curved objects, while our representation reaches 0.876. At 25% commitment, executed-grasp
+              success is 0.503 against 0.984. The 512-byte interface is 288&times; smaller than one RGB-D frame
+              and runs at 16&nbsp;ms per CPU decision. On unseen objects within-scene AUC falls to 0.569, and a
+              full-feedback update raises empirical mean pairwise coverage from 0.728 to 0.883.
             </p>
           </div>
         </div>
@@ -592,7 +592,10 @@
           <p>The rate is not a regulariser we chose for convenience: it is the mutual information between the
             observation and the code, which on a networked manipulator is the payload. A pipeline that ships a
             reconstructed mesh or a dense pose distribution ships orders of magnitude more, and the evidence above
-            says the extra bits do not change the decision.</p>
+            says the extra bits do not change the decision. Measured as a payload rather than a code
+            length, the 512-byte interface is <strong>288&times;</strong> smaller than the 147.5&nbsp;kB of one
+            RGB-D frame and <strong>2304&times;</strong> smaller than the 1.18&nbsp;MB an eight-view set costs,
+            and one decision takes <strong>16&nbsp;ms</strong> on CPU.</p>
         </div>
         <div class="ax-card">
           <div class="ax-card-eyebrow">The cheap end of the frontier</div>
@@ -729,6 +732,21 @@
             continuously unidentifiable and the theorem says nothing at all. Where it does have content the
             prediction matches an independently measured subspace to under a degree, but the reach is genuinely
             limited and the per-object table shows it case by case.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>Ranking transfers to unseen objects, but less than half of it</h3>
+          <p>Held out object by object, within-scene AUC drops from the in-distribution 0.639 to
+            <strong>0.569</strong> on the seven objects whose base rates make the ranking question well posed. It
+            stays above chance, so the representation does carry grasp-ranking structure to geometry it has never
+            seen, but the claim that it transfers intact is not supported at this scope.</p>
+        </div>
+        <div class="ai-limit">
+          <h3>A held-out object breaks the fixed quantile until feedback arrives</h3>
+          <p>Calibrated on twelve objects and deployed on a thirteenth, the fixed quantile undercovers badly:
+            mean pairwise coverage <strong>0.728</strong>, worst 0.533 on ketchup. An anchored full-feedback
+            update lifts it to <strong>0.883</strong> and compresses dispersion from 0.110 to 0.032, worst case
+            0.780. This is a clustered empirical diagnostic under simulated shift, not a selective-feedback
+            validity claim.</p>
         </div>
         <div class="ai-limit">
           <h3>Three objects cannot be scored at all</h3>
