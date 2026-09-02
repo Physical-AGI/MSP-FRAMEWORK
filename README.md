@@ -1,7 +1,6 @@
 # MSP
 
-Project page for **Perception as Sufficiency, Not Accuracy: A Minimal-Rate, Certifiable Grasping
-Interface for the Network Edge**.
+Project page for **Learning Manipulation-Sufficient Representations via Outcome Bottlenecks**.
 
 Perception for manipulation, formulated as estimating a calibrated belief over the **minimal
 statistic that preserves all and only the information that changes action outcomes**, rather than an
