@@ -15,7 +15,7 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta property="og:description" content="Estimate what changes the outcome, not what the object looks like. A 512-byte interface, 288x smaller than one RGB-D frame, at 16 ms per CPU decision.">>
+  <meta property="og:description" content="Estimate what changes the outcome, not what the object looks like. A measured 10-byte payload per scene, with a distribution-free certificate on the grasp actually executed.">>
   <meta property="og:url" content="https://physical-agi.github.io/MSP-FRAMEWORK/">
   <meta property="og:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
   <meta property="og:image:alt" content="The MSP framework: RGB-D observations, a belief encoder, an outcome head, and an inference block that certifies, acts, senses and adapts">
@@ -27,7 +27,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta name="twitter:description" content="An analytic grasp score on a reconstructed geometry is anti-correlated with the truth on curved objects. Ours reaches 0.891 there, in 512 bytes per scene.">>
+  <meta name="twitter:description" content="An analytic grasp score on a reconstructed geometry is anti-correlated with the truth on curved objects. Ours reaches 0.891 there, in 10 entropy-coded bytes per scene.">>
   <meta name="twitter:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
   <meta name="twitter:image:alt" content="The MSP framework diagram">
 
@@ -245,7 +245,7 @@
               0.56&deg; of principal angle. Across 11,979 simulated grasps on 13 scanned LIBERO groceries, a
               reconstructed-geometry wrench score reaches 0.542 AUC against lift success and falls below chance
               on curved objects, while our representation reaches 0.876. At 25% commitment, executed-grasp
-              success is 0.503 against 0.984. The 512-byte interface is 288&times; smaller than one RGB-D frame
+              success is 0.503 against 0.984. The entropy-coded payload is 10 bytes per scene
               and runs at 16&nbsp;ms per CPU decision. On unseen objects within-scene AUC falls to 0.569, and a
               full-feedback update raises empirical mean pairwise coverage from 0.728 to 0.883.
             </p>
@@ -593,9 +593,21 @@
             observation and the code, which on a networked manipulator is the payload. A pipeline that ships a
             reconstructed mesh or a dense pose distribution ships orders of magnitude more, and the evidence above
             says the extra bits do not change the decision. Measured as a payload rather than a code
-            length, the 512-byte interface is <strong>288&times;</strong> smaller than the 147.5&nbsp;kB of one
-            RGB-D frame and <strong>2304&times;</strong> smaller than the 1.18&nbsp;MB an eight-view set costs,
-            and one decision takes <strong>16&nbsp;ms</strong> on CPU.</p>
+            length, the belief quantised to two bits per dimension and entropy-coded is
+            <strong>10&nbsp;bytes per scene</strong> &mdash; measured, not an fp32 storage figure &mdash; which is
+            <strong>14,750&times;</strong> smaller than the 147.5&nbsp;kB of one RGB-D frame. Ten bytes cost
+            nothing that matters: within-scene AUC 0.636 against 0.638 at fp32, coverage 0.906 against 0.904.
+            One bit per dimension is the cliff, at 0.584.</p>
+
+          <p>Because the statistic is formed <em>before</em> a grasp is chosen, one payload scores every
+            candidate. A retrained Dex-Net grasp-quality network forms its representation <em>after</em> the
+            grasp is applied, so it must send one payload per candidate. Sweeping the same quantiser over both
+            traces a rate&ndash;quality frontier that crosses near <strong>600 bits per scene</strong>: below it
+            ours ranks better on eight times fewer bits; above it the baseline is the stronger ranker.</p>
+
+          <p>Loss behaves the way a certificate should. As packet loss rises from 0 to 20&nbsp;% the system acts
+            on 0.628 down to 0.507 of scenes while success given action stays flat between 0.852 and 0.860. A
+            degrading link costs throughput, not reliability.</p>
         </div>
         <div class="ax-card">
           <div class="ax-card-eyebrow">The cheap end of the frontier</div>
