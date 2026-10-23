@@ -69,6 +69,17 @@
 
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script defer src="static/js/index.js"></script>
+  <script defer src="static/js/generated/msp_results.js"></script>
+  <script defer src="static/js/msp_results_view.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./static/js/vendor/three-0.160.0/three.module.min.js",
+        "three/addons/": "./static/js/vendor/three-0.160.0/addons/"
+      }
+    }
+  </script>
+  <script type="module" src="static/js/msp4d.js"></script>
 
   <script type="application/ld+json">
   {
@@ -104,8 +115,10 @@
       <a href="#method">Method</a>
       <a href="#evidence">Evidence</a>
       <a href="#deploy">Deployment</a>
+      <a href="#lift4d">4D</a>
       <a href="#certificate">Certificate</a>
       <a href="#rate">Rate</a>
+      <a href="#baselines">Baselines</a>
       <a href="#objects">Objects</a>
       <a href="#ablations">Ablations</a>
       <a href="#limits">Limits</a>
@@ -501,8 +514,73 @@
     </div>
   </section>
 
+  <!-- 4D grasp viewer -->
+  <section class="section hero is-light" id="lift4d">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Every Candidate, Replayed in 4D</h2>
+      <p class="ai-section-intro">
+        One held-out test scene per grocery. The cloud fuses the simulator's eight ring cameras, and each candidate
+        grasp is replayed through the same MuJoCo rollout that labelled it, so the object moves through X, Y, Z and
+        t exactly as its outcome was decided. Drag to orbit, scroll to zoom, pick a grasp to replay it.
+      </p>
+
+      <div class="m4d" id="m4d">
+        <div class="m4d-objects" id="m4d-objects" role="group" aria-label="Test scene"></div>
+        <div class="m4d-main">
+          <div class="m4d-stage">
+            <canvas id="m4d-canvas" role="img" aria-label="Interactive 3D point cloud of the test scene and the replayed grasp"></canvas>
+            <div class="m4d-hud"><span id="m4d-phase">Loading</span><span id="m4d-time"></span></div>
+            <div class="m4d-liftbar">
+              <span id="m4d-lift">object raised 0 mm</span>
+              <div class="m4d-liftbar-track"><i id="m4d-lift-fill"></i><b class="m4d-liftbar-mark" id="m4d-lift-mark"></b></div>
+            </div>
+            <div class="m4d-legend">
+              <span><i class="m4d-legend-ramp"></i>trail, t = 0 to now</span>
+              <span><i class="m4d-legend-ring"></i>success height</span>
+            </div>
+            <div class="m4d-loading is-on">Loading the point cloud&hellip;</div>
+          </div>
+          <aside class="m4d-side">
+            <figure class="m4d-input">
+              <img id="m4d-input" alt="" width="96" height="96">
+              <figcaption>What the encoder scored: view 0 alone, 96&nbsp;&times;&nbsp;96 RGB-D (colour shown). The
+                fused cloud is for the reader, not the model.</figcaption>
+            </figure>
+            <div class="m4d-cands-head"><span>Candidates, ranked by MSP</span><span>MSP score</span></div>
+            <div class="m4d-cands" id="m4d-cands"></div>
+          </aside>
+        </div>
+        <div class="m4d-controls">
+          <button class="m4d-play" id="m4d-play" type="button" aria-label="Play"><i class="fas fa-play"></i><i class="fas fa-pause"></i></button>
+          <input type="range" id="m4d-scrub" min="0" max="84" value="0" step="1" aria-label="Time">
+          <div class="m4d-speeds" role="group" aria-label="Playback speed">
+            <button class="ax-pill m4d-speed" type="button" data-speed="0.25">0.25&times;</button>
+            <button class="ax-pill m4d-speed is-active" type="button" data-speed="0.5">0.5&times;</button>
+            <button class="ax-pill m4d-speed" type="button" data-speed="1">1&times;</button>
+          </div>
+          <button class="m4d-toggle" id="m4d-trail" type="button" aria-pressed="true">4D trail</button>
+          <button class="m4d-toggle" id="m4d-axes" type="button" aria-pressed="true">All jaw axes</button>
+          <button class="m4d-toggle" id="m4d-reset" type="button">Reset view</button>
+        </div>
+      </div>
+
+      <p class="ai-table-note">
+        <span id="m4d-summary"></span> Thirteen scenes illustrate the comparison; they do not evaluate it. The
+        1,997-scene result is the act-rate panel above.
+      </p>
+      <p class="ai-table-note">
+        <strong>How the scenes were chosen.</strong> For each object, the first test scene in corpus order that the
+        within-scene AUC can score: at least three executable candidates, with both a lift and a failure among them.
+        Scores are the stored L1 test scores; nothing is retrained. The object is rigid, so its fused points are
+        moved by the simulator's recorded pose every 20&nbsp;ms, and the trail draws earlier poses from dark (t = 0)
+        to yellow (now). Gaps in the table are floor that no camera saw: outside every field of view, or hidden behind the object. A candidate whose open
+        jaws already intersect the scene is never executed and counts as a failure. <span id="m4d-note"></span>
+      </p>
+    </div>
+  </section>
+
   <!-- Certificate -->
-  <section class="section hero is-light" id="certificate">
+  <section class="section" id="certificate">
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">The Certificate Holds on Images</h2>
       <p class="ai-section-intro">
@@ -563,11 +641,43 @@
           less often, which is the trade a deployed manipulator should be allowed to choose.
         </figcaption>
       </figure>
+
+      <h3 class="title is-5 bx-sub">Coverage for the grasp that is actually executed</h3>
+      <p class="ai-table-note">
+        The filter is calibrated over observation&ndash;action pairs, but the controller executes an argmax, and a
+        data-dependent selection is not exchangeable with the calibration pairs. Calibrating on the selected action
+        of each calibration scene applies the same rule to both folds and restores exchangeability at the scene
+        level.
+      </p>
+      <div class="ai-table-wrap">
+        <table class="ai-table bx-exec">
+          <caption class="ai-caption">Coverage, then certified fraction, at three targets</caption>
+          <thead>
+            <tr>
+              <th class="ai-th-text" scope="col" rowspan="2">Target</th>
+              <th scope="colgroup" colspan="2">Pairwise filter, all pairs</th>
+              <th scope="colgroup" colspan="2">Same filter, executed grasp</th>
+              <th class="ai-col-avg" scope="colgroup" colspan="2">Recalibrated on the selected action</th>
+            </tr>
+            <tr>
+              <th scope="col">cov.</th><th scope="col">cert.</th>
+              <th scope="col">cov.</th><th scope="col">cert.</th>
+              <th scope="col">cov.</th><th scope="col">cert.</th>
+            </tr>
+          </thead>
+          <tbody id="bx-exec-body"></tbody>
+        </table>
+      </div>
+      <p class="ai-table-note">
+        On the executed grasp the published filter is conservative rather than invalid: 0.960 coverage at a 0.95
+        target. Recalibrated on the selected action it lands at 0.955 and certifies slightly more executed grasps,
+        so the scene-level statement is both correct and less conservative, and it is the one the paper adopts.
+      </p>
     </div>
   </section>
 
   <!-- Rate -->
-  <section class="section" id="rate">
+  <section class="section hero is-light" id="rate">
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">What the Link Has to Carry</h2>
       <p class="ai-section-intro">
@@ -594,16 +704,10 @@
             reconstructed mesh or a dense pose distribution ships orders of magnitude more, and the evidence above
             says the extra bits do not change the decision. Measured as a payload rather than a code
             length, the belief quantised to two bits per dimension and entropy-coded is
-            <strong>10&nbsp;bytes per scene</strong> &mdash; measured, not an fp32 storage figure &mdash; which is
+            <strong>10&nbsp;bytes per scene</strong>, a measured payload rather than an fp32 storage figure, which is
             <strong>14,750&times;</strong> smaller than the 147.5&nbsp;kB of one RGB-D frame. Ten bytes cost
             nothing that matters: within-scene AUC 0.636 against 0.638 at fp32, coverage 0.906 against 0.904.
             One bit per dimension is the cliff, at 0.584.</p>
-
-          <p>Because the statistic is formed <em>before</em> a grasp is chosen, one payload scores every
-            candidate. A retrained Dex-Net grasp-quality network forms its representation <em>after</em> the
-            grasp is applied, so it must send one payload per candidate. Sweeping the same quantiser over both
-            traces a rate&ndash;quality frontier that crosses near <strong>600 bits per scene</strong>: below it
-            ours ranks better on eight times fewer bits; above it the baseline is the stronger ranker.</p>
 
           <p>Loss behaves the way a certificate should. As packet loss rises from 0 to 20&nbsp;% the system acts
             on 0.628 down to 0.507 of scenes while success given action stays flat between 0.852 and 0.860. A
@@ -617,6 +721,56 @@
             interface deployable on a constrained link rather than only in a lab.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Learned baselines and the rate-quality frontier -->
+  <section class="section" id="baselines">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Learned Baselines, Priced in Bits</h2>
+      <p class="ai-section-intro">
+        Every method scores the same candidate grasps. Two learned competitors matter: the same network with the rate
+        term removed, which isolates the bottleneck, and the Dex-Net grasp-quality architecture retrained on this
+        corpus.
+      </p>
+
+      <div class="ai-table-wrap">
+        <table class="ai-table">
+          <caption class="ai-caption">Ranking quality and transport cost on the same candidates; payload is entropy-coded bytes per scene</caption>
+          <thead>
+            <tr>
+              <th class="ai-th-text" scope="col">Method</th>
+              <th scope="col">Pooled AUC</th>
+              <th class="ai-col-avg" scope="col">Within-scene</th>
+              <th scope="col">Top-1</th>
+              <th scope="col">fp32</th>
+              <th scope="col">2-bit</th>
+            </tr>
+          </thead>
+          <tbody id="bx-table-body"></tbody>
+        </table>
+      </div>
+      <p class="ai-table-note">
+        Removing the rate term leaves ranking where it was, 0.653 against 0.640 within-scene: compression costs
+        nothing in ranking. The retrained GQ-CNN ranks better, 0.851 &plusmn; 0.006 over three seeds, because it crops
+        and rotates the depth patch by the candidate pose, so the action enters through the receptive field. That
+        representation exists only after a grasp is applied, so an edge deployment sends one payload per candidate;
+        MSP's statistic is formed before the grasp is chosen and one payload scores all eight.
+      </p>
+
+      <div class="ax-pills" id="bx-metric" role="group" aria-label="Quality metric">
+        <button class="ax-pill is-active" type="button" data-metric="within">Within-scene AUC</button>
+        <button class="ax-pill" type="button" data-metric="top1">Top-1 success</button>
+        <button class="ax-pill" type="button" data-metric="pooled">Pooled AUC</button>
+      </div>
+      <div class="ax-chart-card ax-chart-host" id="bx-frontier"></div>
+      <p class="ai-table-note">
+        One quantiser, swept from 1 to 32 bits per dimension, applied to both representations and measured as
+        entropy-coded bits. MSP saturates by about 140 bits per scene. At the tightest budget it reaches 0.591
+        within-scene from 48 bits, where the per-candidate baseline reaches 0.574 from 382 bits; given two orders of
+        magnitude more bandwidth the ordering reverses. Which side of the crossing a deployment sits on is a link
+        budget question, and MSP owns the low-rate side. Hover a point for its bit depth.
+      </p>
     </div>
   </section>
 
