@@ -3,3 +3,5 @@ Thumbs.db
 *.swp
 *~
 node_modules/
+.taste-skill/
+__pycache__/

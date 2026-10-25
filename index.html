@@ -1,1013 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Primary Meta Tags -->
-  <meta name="title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta name="description" content="A policy-free, action-conditioned outcome bottleneck learns what changes an action outcome instead of what an object looks like. Grasp selection, conformal filtering, active viewpoint choice and test-time adaptation all run over one encoder and one outcome head.">>
-  <meta name="keywords" content="manipulation, grasping, information bottleneck, sufficient statistic, conformal prediction, calibrated abstention, identifiability, active perception, edge robotics, IoT">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="English">
-  <meta name="author" content="Md Selim Sarowar">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta property="og:description" content="Estimate what changes the outcome, not what the object looks like. A measured 10-byte payload per scene, with a distribution-free certificate on the grasp actually executed.">>
-  <meta property="og:url" content="https://physical-agi.github.io/MSP-FRAMEWORK/">
-  <meta property="og:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
-  <meta property="og:image:alt" content="The MSP framework: RGB-D observations, a belief encoder, an outcome head, and an inference block that certifies, acts, senses and adapts">
-  <meta property="article:section" content="Robotics">
-  <meta property="article:tag" content="grasping">
-  <meta property="article:tag" content="conformal prediction">
-  <meta property="article:tag" content="information bottleneck">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta name="twitter:description" content="An analytic grasp score on a reconstructed geometry is anti-correlated with the truth on curved objects. Ours reaches 0.891 there, in 10 entropy-coded bytes per scene.">>
-  <meta name="twitter:image" content="https://physical-agi.github.io/MSP-FRAMEWORK/static/images/fig_framework.png">
-  <meta name="twitter:image:alt" content="The MSP framework diagram">
-
-  <!-- Academic / Google Scholar -->
-  <meta name="citation_title" content="Learning Manipulation-Sufficient Representations via Outcome Bottlenecks">
-  <meta name="citation_author" content="Sarowar, Md Selim">
-  <meta name="citation_author" content="Kim, Sungho">
-  <meta name="citation_conference_title" content="IEEE International Conference on Robotics and Automation (ICRA)">
-  <meta name="citation_publication_date" content="2027">
-
-  <!-- Additional SEO -->
-  <meta name="theme-color" content="#1F5C8B">
-  <meta name="msapplication-TileColor" content="#1F5C8B">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="canonical" href="https://physical-agi.github.io/MSP-FRAMEWORK/">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-
-  <title>MSP: Learning Manipulation-Sufficient Representations via Outcome Bottlenecks</title>
-
-  <link rel="icon" type="image/png" href="static/images/robot.png">
-  <link rel="apple-touch-icon" href="static/images/robot.png">
-
-  <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
-
-  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-
-  <noscript>
-    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  </noscript>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script defer src="static/js/index.js"></script>
-  <script defer src="static/js/generated/msp_results.js"></script>
-  <script defer src="static/js/msp_results_view.js"></script>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "./static/js/vendor/three-0.160.0/three.module.min.js",
-        "three/addons/": "./static/js/vendor/three-0.160.0/addons/"
-      }
-    }
-  </script>
-  <script type="module" src="static/js/msp4d.js"></script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
-    "headline": "Learning Manipulation-Sufficient Representations via Outcome Bottlenecks",
-    "author": [
-      { "@type": "Person", "name": "Md Selim Sarowar" },
-      { "@type": "Person", "name": "Sungho Kim" }
-    ],
-    "description": "Perception for manipulation formulated as estimating a calibrated belief over the minimal statistic that preserves all and only the information that changes action outcomes.",
-    "keywords": ["manipulation", "grasping", "information bottleneck", "conformal prediction", "identifiability", "edge robotics"],
-    "abstract": "Two world states are equivalent when every admissible action produces the same outcome distribution. Geometry is recoverable only up to that equivalence, and accuracy beyond the sufficiency resolution is both unrecoverable and unnecessary. Grasp selection, distribution-free abstention, active perception and test-time adaptation all fall out of two learned modules as inference procedures, with no reconstruction, no dynamics rollout and no reinforcement learning.",
-    "isAccessibleForFree": true,
-    "codeRepository": "https://github.com/s-elim/msp-framework",
-    "about": [
-      { "@type": "Thing", "name": "Robot Grasping" },
-      { "@type": "Thing", "name": "Uncertainty Quantification" }
-    ]
-  }
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pose-posterior grasp planning</title>
+<meta name="description" content="A pose estimate that passes the accuracy test can still drop the object. Planning grasps on a pose posterior built from the estimator's own errors lifts it: top-1 grasp success 0.791 to 0.859 on LM-Grasp, level with the annotated pose.">
+<meta property="og:title" content="Pose-posterior grasp planning">
+<meta property="og:description" content="Top-1 grasp success 0.791 to 0.859, level with the annotated pose (0.856).">
+<meta property="og:image" content="static/video/rollout_pair.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/page.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
-<nav class="ai-nav" id="ai-nav" aria-label="Section navigation">
-  <div class="ai-nav-inner">
-    <a class="ai-nav-brand" href="#top">MSP<span> Framework</span></a>
-    <button class="ai-nav-toggle" id="ai-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="ai-nav-links" id="ai-nav-links">
-      <a href="#abstract">Abstract</a>
-      <a href="#method">Method</a>
-      <a href="#evidence">Evidence</a>
-      <a href="#deploy">Deployment</a>
-      <a href="#lift4d">4D</a>
-      <a href="#certificate">Certificate</a>
-      <a href="#rate">Rate</a>
-      <a href="#baselines">Baselines</a>
-      <a href="#objects">Objects</a>
-      <a href="#ablations">Ablations</a>
-      <a href="#limits">Limits</a>
-      <a href="#bibtex">BibTeX</a>
+<header class="board top" id="top">
+  <a class="tile mark" href="#top" aria-label="Back to the top">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="0" y="0" width="19" height="19"/><rect x="21" y="21" width="19" height="19"/><rect x="21" y="0" width="19" height="19" class="mark-light"/><rect x="0" y="21" width="19" height="19" class="mark-light"/></svg>
+  </a>
+  <nav class="tile links" aria-label="Sections">
+    <a class="link" href="#results">Results</a>
+    <a class="link" href="#scenes">Scenes</a>
+    <a class="link" href="#method">Method</a>
+    <a class="link" href="#gallery">Gallery</a>
+  </nav>
+  <a class="tile action" href="#scenes">Explore the scenes</a>
+</header>
+
+<main>
+<section class="board hero" aria-labelledby="title">
+  <div class="tile name">
+    <p class="authors">Md Selim Sarowar and Sungho Kim<br>Advanced Visual Intelligence Lab, Yeungnam University</p>
+    <div>
+      <h1 id="title">Pose-posterior grasp planning</h1>
+      <p class="what">Robot grasps planned on where an object could be, not on one pose estimate.</p>
     </div>
   </div>
-  <div class="ai-progress" id="ai-progress"></div>
-</nav>
+  <figure class="tile photo shutter">
+    <img src="static/img/gallery/lmo_000652_boxes.jpg" width="960" height="720" alt="A cluttered LM-O test image with the FoundationPose estimate of every object as an orange box and sixteen posterior samples as teal boxes.">
+  </figure>
+  <figure class="tile photo clip">
+    <video src="static/video/rollout_pair.webm" poster="static/video/rollout_pair.jpg" autoplay muted loop playsinline width="968" height="480" aria-label="MuJoCo rollout of the same driller: on the left the grasp planned on the point estimate drops it, on the right the grasp planned on the posterior lifts it."></video>
+    <figcaption><span class="tag tag-point">Point estimate</span><span class="tag tag-post">Posterior</span></figcaption>
+  </figure>
+  <div class="pair">
+    <p class="tile dark statement">A pose that passes the accuracy test can still drop the object. Planning on a pose posterior lifts it.</p>
+    <p class="tile accent statement">Top-1 grasp success 0.791 to 0.859, level with the annotated pose (0.856).</p>
+  </div>
+</section>
 
-<main id="main-content">
-  <a id="top"></a>
+<section class="section stats" id="results" aria-labelledby="stats-title">
+  <h2 id="stats-title" class="head wrap" data-reveal>Small errors, lost grasps</h2>
+  <div class="mosaic">
+    <figure class="mosaic-photo" data-reveal>
+      <img src="static/img/teaser_story.jpg" width="1200" height="1170" loading="lazy" alt="One LM-O driller. Top: the FoundationPose estimate, 4 percent of the diameter off, and its grasp, which drops the driller in MuJoCo. Bottom: sixteen posterior samples and the grasp they choose, which lifts it.">
+    </figure>
+    <div class="figure-tile dark" data-reveal style="--i:1">
+      <p class="figure">0.984</p>
+      <p class="figure-caption">success where the estimate is off by 5 to 10% of the object's diameter, against 0.796 on the point estimate</p>
+    </div>
+    <div class="figure-tile accent" data-reveal style="--i:2">
+      <p class="figure">0.972</p>
+      <p class="figure-caption">of certified grasps succeed, against 0.904 when planning on the point estimate</p>
+    </div>
+  </div>
+</section>
 
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">Learning Manipulation-Sufficient Representations via Outcome Bottlenecks</h1>
+<section class="section showcase" id="scenes" aria-labelledby="scenes-title">
+  <div class="plate" data-reveal>
+    <svg id="scene" viewBox="0 0 640 480" role="img" aria-labelledby="scene-caption">
+      <image id="scene-image" href="static/data/scenes/000652.jpg" width="640" height="480"/>
+      <g id="scene-boxes"></g>
+      <g id="scene-grasps"></g>
+    </svg>
+  </div>
+  <div class="side">
+    <div class="tabs" role="tablist" aria-label="What the scene shows">
+      <button role="tab" aria-selected="true" data-mode="point">Point estimate</button>
+      <button role="tab" aria-selected="false" data-mode="posterior">Posterior</button>
+      <button role="tab" aria-selected="false" data-mode="annotation">Annotation</button>
+    </div>
+    <div class="side-text">
+      <h2 id="scenes-title" class="head" data-reveal>Unseen clutter</h2>
+      <p id="scene-caption" class="lead" aria-live="polite">LM-O test frames, never used for tuning. Over all 1,474 objects the posterior grasp lifts 0.750, the point-estimate grasp 0.683.</p>
+      <p id="scene-count" class="small muted"></p>
+    </div>
+    <div class="cells">
+      <button class="cell cell-ink" data-step="-1">Previous scene</button>
+      <button class="cell cell-tone" data-step="1">Next scene</button>
+    </div>
+  </div>
+</section>
 
-            <div class="is-size-5 publication-authors">
-              <span class="author-block">Md Selim Sarowar</span>,
-              <span class="author-block">Sungho Kim<sup>&dagger;</sup></span>
-            </div>
-            <p class="ai-anon-note" style="margin-top:0.5rem">
-              <sup>&dagger;</sup>Corresponding author. Yeungnam University.
-            </p>
-
-            <div class="ai-venue-badge">Under review &middot; IEEE International Conference on Robotics and Automation (ICRA'27)</div>
-
-            <div class="column has-text-centered">
-              <div class="publication-links">
-                <span class="link-block">
-                  <span class="button is-normal is-rounded is-dark is-pending">
-                    <span class="icon"><i class="ai ai-arxiv"></i></span>
-                    <span>arXiv soon</span>
-                  </span>
-                </span>
-
-                <span class="link-block">
-                  <span class="button is-normal is-rounded is-dark is-pending">
-                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                    <span>Paper soon</span>
-                  </span>
-                </span>
-
-                <span class="link-block">
-                  <a href="https://github.com/s-elim/msp-framework" target="_blank" rel="noopener"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fab fa-github"></i></span>
-                    <span>Code</span>
-                  </a>
-                </span>
-
-                <span class="link-block">
-                  <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fas fa-quote-left"></i></span>
-                    <span>Cite</span>
-                  </a>
-                </span>
-              </div>
-              <p class="ai-anon-note">
-                Two learned modules. No reconstruction, no dynamics rollout, no reinforcement learning.
-              </p>
-            </div>
-          </div>
-        </div>
+<section class="section method" id="method" aria-labelledby="method-title">
+  <div class="method-intro wrap">
+    <h2 id="method-title" class="head" data-reveal>One pose, many poses</h2>
+    <p class="lead" data-reveal style="--i:1">The estimator stays frozen. Its own measured errors become the uncertainty. <a class="link-plain" href="static/img/fig2_method.jpg">Open the full figure</a></p>
+  </div>
+  <div class="accordion" data-reveal style="--i:2">
+    <div class="stage" style="--k:0" data-open="true">
+      <button class="stage-tab" aria-expanded="true" aria-controls="stage-0">Estimate</button>
+      <div class="stage-body" id="stage-0">
+        <div class="stage-text"><h3>Estimate</h3><p>FoundationPose returns one pose and no uncertainty.</p></div>
+        <img src="static/img/stage_estimate.jpg" width="516" height="551" loading="lazy" alt="The RGB-D input with the visible mask, and the FoundationPose estimate as an orange box.">
       </div>
     </div>
-  </section>
-
-  <!-- Teaser -->
-  <section class="hero teaser">
-    <div class="container is-max-desktop">
-      <div class="hero-body">
-        <figure class="ai-figure" style="margin-top:0">
-          <img src="static/images/fig_framework.png" class="ai-zoomable"
-               alt="The MSP framework: a hidden world state produces RGB-D observations from networked cameras; a belief encoder returns a posterior over a 64-dimensional code; an outcome head maps code and action to success, margin and slip; an inference block marginalises, certifies by split conformal, acts risk-aversely, senses a new view and adapts after a probe">
-          <figcaption>
-            <strong>Perception estimates a belief over a code, not a pose.</strong> The world state
-            <em>x</em>&nbsp;=&nbsp;(<em>S</em>, <em>T</em>, &phi;) collects shape, pose and physics, and only the
-            first two are visible in an image at all. A per-view backbone pools into a posterior
-            <em>q<sub>&theta;</sub></em>(<em>z</em>&nbsp;|&nbsp;<em>o</em>) trained by a variational information
-            bottleneck: minimise the rate <em>R</em> while paying a weighted distortion on the outcomes that decide
-            what happens. Every deployment behaviour, certified abstention, risk-averse action, active sensing and
-            post-probe adaptation, is an inference procedure over the same two frozen modules. Nothing in the
-            objective asks for a reconstruction or a pose, and nothing retrains at deployment.
-          </figcaption>
-        </figure>
+    <div class="stage" style="--k:1" data-open="false">
+      <button class="stage-tab" aria-expanded="false" aria-controls="stage-1">Residual bank</button>
+      <div class="stage-body" id="stage-1">
+        <div class="stage-text"><h3>Residual bank</h3><p>Its errors on annotated training frames, kept with fit features.</p></div>
+        <img src="static/img/stage_bank.jpg" width="1381" height="269" loading="lazy" alt="Training frames with the estimate and the annotation, and the bank of their errors.">
       </div>
     </div>
-  </section>
-
-  <!-- Key numbers -->
-  <section class="section ai-stats-section">
-    <div class="container is-max-desktop">
-      <div class="ai-stats">
-        <div class="ai-stat">
-          <div class="ai-stat-value" data-count-to="0.473" data-decimals="3">0.000</div>
-          <div class="ai-stat-label">Analytic grasp score on curved objects, below chance</div>
-        </div>
-        <div class="ai-stat">
-          <div class="ai-stat-value" data-count-to="0.891" data-decimals="3">0.000</div>
-          <div class="ai-stat-label">MSP on the same objects</div>
-        </div>
-        <div class="ai-stat">
-          <div class="ai-stat-value" data-count-to="0.897" data-decimals="3">0.000</div>
-          <div class="ai-stat-label">Empirical coverage at a 0.90 target, n = 16,000</div>
-        </div>
-        <div class="ai-stat">
-          <div class="ai-stat-value" data-count-to="0.53" data-decimals="2" data-suffix=" nats">0.00 nats</div>
-          <div class="ai-stat-label">Rate the code costs on the link, per scene</div>
-        </div>
+    <div class="stage" style="--k:2" data-open="false">
+      <button class="stage-tab" aria-expanded="false" aria-controls="stage-2">Retrieve</button>
+      <div class="stage-body" id="stage-2">
+        <div class="stage-text"><h3>Retrieve</h3><p>Training frames whose fit looks alike lend their errors.</p></div>
+        <img src="static/img/stage_retrieve.jpg" width="856" height="551" loading="lazy" alt="Depth points coloured by their distance to the posed model, and the bank sorted by feature distance with the drawn rows marked.">
       </div>
     </div>
-  </section>
-
-  <!-- Abstract -->
-  <section class="section hero is-light" id="abstract">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Abstract</h2>
-          <div class="content has-text-justified">
-            <p>
-              Networked manipulation endpoints couple perception to actuation across compute- and
-              bandwidth-limited links, yet commonly exchange dense geometric states optimized for fidelity
-              rather than action outcomes. We learn a stochastic representation with a policy-free,
-              action-conditioned <strong>outcome bottleneck</strong>: the marginal outcome log-loss supplies the
-              distortion and a KL term regularizes the rate. The construction is motivated by
-              <strong>the minimal statistic that preserves the outcome distribution of every admissible
-              action</strong>, while the implemented finite model is evaluated as a rate-regularized mixture
-              predictor. One encoder and one outcome head then support grasp selection, singleton conformal
-              filtering, active viewpoint selection and latent test-time adaptation: no reconstruction, no
-              dynamics rollout, no reinforcement learning. A finite-probe theorem identifies the local level-set
-              tangent space with the null space of an outcome Jacobian; the synthetic oracle verifies it, and on
-              scanned objects an analytic surrogate agrees with measured simulator invariances to within
-              0.56&deg; of principal angle. Across 11,979 simulated grasps on 13 scanned LIBERO groceries, a
-              reconstructed-geometry wrench score reaches 0.542 AUC against lift success and falls below chance
-              on curved objects, while our representation reaches 0.876. At 25% commitment, executed-grasp
-              success is 0.503 against 0.984. The entropy-coded payload is 10 bytes per scene
-              and runs at 16&nbsp;ms per CPU decision. On unseen objects within-scene AUC falls to 0.569, and a
-              full-feedback update raises empirical mean pairwise coverage from 0.728 to 0.883.
-            </p>
-          </div>
-        </div>
+    <div class="stage" style="--k:3" data-open="false">
+      <button class="stage-tab" aria-expanded="false" aria-controls="stage-3">Sample</button>
+      <div class="stage-body" id="stage-3">
+        <div class="stage-text"><h3>Sample</h3><p>Sixteen poses the object could be in.</p></div>
+        <img src="static/img/stage_posterior.jpg" width="697" height="551" loading="lazy" alt="Sixteen posterior samples as teal boxes on the image and on the depth point cloud.">
       </div>
     </div>
-  </section>
-
-  <!-- Method -->
-  <section class="section" id="method">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Four Stages, Two Modules</h2>
-      <p class="ai-section-intro">
-        Everything at deployment is inference over the same two frozen modules. Pick a stage.
-      </p>
-
-      <div class="ai-loop">
-        <div class="ai-loop-stages" role="tablist" aria-label="Pipeline stages">
-          <button class="ai-stage" role="tab" aria-selected="true" data-stage="observe" style="--stage-c:var(--stage-observe)">
-            <span class="ai-stage-num">1</span>
-            <span>
-              <span class="ai-stage-name">Observe</span>
-              <span class="ai-stage-sub">Networked RGB-D, true state never available</span>
-            </span>
-          </button>
-          <div class="ai-stage-arrow" role="presentation" aria-hidden="true"><i class="fas fa-arrow-down"></i></div>
-
-          <button class="ai-stage" role="tab" aria-selected="false" data-stage="encode" style="--stage-c:var(--stage-encode)">
-            <span class="ai-stage-num">2</span>
-            <span>
-              <span class="ai-stage-name">Encode a belief</span>
-              <span class="ai-stage-sub">A posterior over a 64-d code, not a pose</span>
-            </span>
-          </button>
-          <div class="ai-stage-arrow" role="presentation" aria-hidden="true"><i class="fas fa-arrow-down"></i></div>
-
-          <button class="ai-stage" role="tab" aria-selected="false" data-stage="score" style="--stage-c:var(--stage-score)">
-            <span class="ai-stage-num">3</span>
-            <span>
-              <span class="ai-stage-name">Score outcomes</span>
-              <span class="ai-stage-sub">Success, margin, slip, marginalised over the belief</span>
-            </span>
-          </button>
-          <div class="ai-stage-arrow" role="presentation" aria-hidden="true"><i class="fas fa-arrow-down"></i></div>
-
-          <button class="ai-stage" role="tab" aria-selected="false" data-stage="certify" style="--stage-c:var(--stage-certify)">
-            <span class="ai-stage-num">4</span>
-            <span>
-              <span class="ai-stage-name">Certify, act or abstain</span>
-              <span class="ai-stage-sub">Split conformal, distribution-free coverage</span>
-            </span>
-          </button>
-        </div>
-
-        <div class="ai-loop-detail" id="ai-loop-detail">
-          <div class="ai-loop-eyebrow"></div>
-          <h3></h3>
-          <p class="ai-loop-lead"></p>
-          <p class="ai-loop-body"></p>
-          <div class="ai-loop-spec"></div>
-        </div>
-      </div>
-
-      <h2 class="title is-3 has-text-centered" style="margin-top:3.5rem">What the Theory Buys</h2>
-      <p class="ai-section-intro">Four claims, and the limit of each one stated next to it.</p>
-
-      <div class="ai-tabs" role="tablist">
-        <button class="ai-tab is-active" role="tab" aria-selected="true" data-tab="sufficiency">Sufficiency</button>
-        <button class="ai-tab" role="tab" aria-selected="false" data-tab="identifiability">Identifiability</button>
-        <button class="ai-tab" role="tab" aria-selected="false" data-tab="coverage">Coverage</button>
-        <button class="ai-tab" role="tab" aria-selected="false" data-tab="active">Active perception</button>
-      </div>
-
-      <div class="ai-tab-panel is-active" role="tabpanel" data-panel="sufficiency">
-        <div class="ai-note-grid">
-          <div class="ai-note">
-            <h3>The statement</h3>
-            <p>Under the Markov chain <em>Z</em>&ndash;<em>O</em>&ndash;<em>X</em>&ndash;<em>Y</em>, the data
-              processing inequality bounds what any code can carry. The minimal sufficient statistic is the
-              information-bottleneck optimum in the limit of a large sufficiency budget, so the code that survives
-              compression is exactly the one that changes outcomes.</p>
-          </div>
-          <div class="ai-note">
-            <h3>What follows practically</h3>
-            <p>There is no reconstruction loss and no pose loss anywhere in the objective. The rate is the number of
-              nats the belief costs to transmit, which on the network edge is the quantity that actually bills.</p>
-          </div>
-        </div>
-        <p class="ai-table-note">
-          The budget is not uniform across outcome channels. Success, margin and slip have log-likelihoods on
-          incommensurate scales, and putting equal weight on them starves the one channel the decision rule reads.
-          The ablation section shows what that costs: the model stops ranking grasps entirely.
-        </p>
-      </div>
-
-      <div class="ai-tab-panel" role="tabpanel" data-panel="identifiability">
-        <div class="ai-note-grid">
-          <div class="ai-note">
-            <h3>The statement</h3>
-            <p>States are identifiable only up to the kernel of the outcome Jacobian. The predicted subspace is
-              compared against one measured independently, by perturbing the state and recording which directions
-              leave real outcomes unchanged. Where the theorem has content the prediction is essentially exact, with
-              principal angles under one degree.</p>
-          </div>
-          <div class="ai-note">
-            <h3>Where it says nothing</h3>
-            <p>For 6 of 13 objects the Jacobian has full rank and the kernel is trivial: nothing is continuously
-              unidentifiable and the theorem makes no claim at all. That is a real limit on its reach, and the object
-              table below marks it per object rather than reporting an average that hides it.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="ai-tab-panel" role="tabpanel" data-panel="coverage">
-        <div class="ai-note-grid">
-          <div class="ai-note">
-            <h3>The statement</h3>
-            <p>Split conformal prediction over a held-out calibration fold gives marginal coverage without any
-              distributional assumption. Actions whose prediction set is the singleton {1} form the certified set;
-              an empty set is an abstention.</p>
-          </div>
-          <div class="ai-note">
-            <h3>The estimand trap</h3>
-            <p>Coverage is Pr(succ in the set) over <em>all</em> test points. Certified precision is
-              Pr(succ = 1 | the action was certified). They are different quantities and reporting the second while
-              claiming the first is the standard way a conformal result gets overclaimed. Both are on this page.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="ai-tab-panel" role="tabpanel" data-panel="active">
-        <div class="ai-note-grid">
-          <div class="ai-note">
-            <h3>Second views help</h3>
-            <p>Acquiring one more viewpoint cuts ambiguity by 13.8% on average. Choosing <em>which</em> viewpoint,
-              selected on one Monte-Carlo estimate of the information gain and scored on an independent one, adds
-              2.9 points for 16.7% in total, over 512 scenes and 8 candidate views.</p>
-          </div>
-          <div class="ai-note">
-            <h3>The number we refuse to quote</h3>
-            <p>Selecting and scoring on the <em>same</em> estimate reports 130.8%, of which 114.1 points are the
-              winner's curse. We report the honest estimate and print the inflated one beside it so the size of the
-              selection bias in this kind of experiment is visible.</p>
-          </div>
-        </div>
-        <p class="ai-table-note">
-          Most of the benefit is in taking a second view at all rather than in choosing it well, and we say so
-          rather than attributing the whole reduction to the policy.
-        </p>
+    <div class="stage" style="--k:4" data-open="false">
+      <button class="stage-tab" aria-expanded="false" aria-controls="stage-4">Roll out</button>
+      <div class="stage-body" id="stage-4">
+        <div class="stage-text"><h3>Roll out</h3><p>Every grasp at every pose, under four physics draws.</p></div>
+        <img src="static/img/stage_rollout.jpg" width="1164" height="612" loading="lazy" alt="Sixteen candidate grasps and MuJoCo rollouts of two of them at several pose samples.">
       </div>
     </div>
-  </section>
-
-  <!-- Evidence -->
-  <section class="section hero is-light" id="evidence">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">The Proxy Fails Where Its Geometry Is Wrong</h2>
-      <p class="ai-section-intro">
-        Ferrari-Canny epsilon is computed on an oriented bounding box, roughly the geometry a pose-and-shape pipeline
-        recovers. The outcome is a rigid-body lift against the object's true mesh.
-      </p>
-
-      <div class="ax-callout">
-        <strong>The natural control group.</strong> Six of the thirteen groceries have a single-box collision hull.
-        Butter, cookies and cream cheese <em>are</em> boxes, so the bounding-box reconstruction is exact for them and
-        there is no hallucinated surface. The remaining seven are cans, bottles and cartons. The thesis predicts the
-        analytic proxy works where its geometry is right and fails where it is not, and it does. On a parametric box
-        this experiment is impossible, because reconstruction and truth are the same object and the gap is
-        identically zero. That is why real meshes are not a nicety.
-      </div>
-
-      <figure class="ai-figure">
-        <img src="static/images/fig_geometry_split.png" class="ai-zoomable"
-             alt="Bar chart: on box-shaped objects Ferrari-Canny reaches AUC 0.574 and MSP 0.797; on curved objects Ferrari-Canny falls to 0.473, below the chance line, while MSP rises to 0.891">
-        <figcaption>
-          <strong>AUC against the real lift outcome, split by whether the reconstruction is exact.</strong> On curved
-          objects the analytic proxy scores below chance: it is anti-correlated with the truth, systematically
-          preferring the grasps that fail. 7,194 grasps on box-shaped objects and 4,785 on curved ones.
-        </figcaption>
-      </figure>
-
-      <div class="ai-table-wrap" style="margin-top:1rem">
-        <table class="ai-table">
-          <caption class="ai-caption">11,979 executable grasps on 13 scanned LIBERO groceries, success rate 0.597</caption>
-          <thead>
-            <tr>
-              <th class="ai-th-text" scope="col">Predictor</th>
-              <th scope="col">Pooled AUC</th>
-              <th class="ai-col-avg" scope="col">Within-scene AUC</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Ferrari-Canny &epsilon; on the reconstruction</th><td>0.542</td><td class="ai-col-avg">0.548</td></tr>
-            <tr class="ai-ours"><th scope="row">MSP, belief trained on outcomes <span class="ai-ours-tag">Ours</span></th><td>0.876</td><td class="ai-col-avg">0.639</td></tr>
-            <tr><th scope="row">Chance</th><td>0.500</td><td class="ai-col-avg">0.500</td></tr>
-            <tr><th scope="row">Oracle: an MLP on the <em>true</em> state</th><td class="ai-na">&ndash;</td><td class="ai-col-avg">0.685</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="ai-table-note">
-        <strong>Read the right column.</strong> Within-scene AUC ranks the candidate grasps of a single settled pose,
-        so it cannot be won by recognising the object. The pooled column can be: per-object base rates on this corpus
-        span 0.043 to 0.999, and a model that has learned nothing but object identity still scores about 0.72 pooled.
-        The oracle bound matters too: no perception system can beat 0.685 within-scene here, so MSP's 0.639 is
-        against a ceiling, not against 1.0.
-      </p>
-    </div>
-  </section>
-
-  <!-- Deployment -->
-  <section class="section" id="deploy">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">When It Commits, Does the Object Come Up?</h2>
-      <p class="ai-section-intro">
-        The system ranks a scene's candidate grasps, executes its favourite, and acts only when confident enough.
-        Sweeping that confidence threshold sweeps the act rate. Drag it.
-      </p>
-
-      <div class="ax-chart-card ax-chart-host" id="ax-risk"></div>
-
-      <div class="ax-actrate">
-        <div class="ax-actrate-head"><span>Act rate</span><b id="ax-act-val">0.25</b></div>
-        <input type="range" id="ax-act" min="1" max="100" step="1" value="25" aria-label="Act rate">
-      </div>
-
-      <div class="ax-duel">
-        <div class="ax-duel-cell is-msp">
-          <div class="ax-duel-name">MSP</div>
-          <div class="ax-duel-val" id="ax-duel-msp">0.984</div>
-          <div class="ax-duel-sub">of executed grasps lifted the object</div>
-        </div>
-        <div class="ax-duel-cell is-proxy">
-          <div class="ax-duel-name">Ferrari-Canny</div>
-          <div class="ax-duel-val" id="ax-duel-proxy">0.503</div>
-          <div class="ax-duel-sub">of executed grasps lifted the object</div>
-        </div>
-        <div class="ax-duel-cell">
-          <div class="ax-duel-name">Random pick</div>
-          <div class="ax-duel-val">0.623</div>
-          <div class="ax-duel-sub">the control that does no ranking at all</div>
-        </div>
-      </div>
-
-      <div class="ax-callout is-null" id="ax-risk-verdict"></div>
-
-      <p class="ai-table-note">
-        1,997 scenes with at least one executable grasp. A useful score rises as it grows more selective; the
-        analytic proxy's <em>falls</em>, and only reaches the random-pick control by committing to nearly every
-        scene. It is not mis-calibrated, which a monotone transform would fix. It is uninformative, and on the
-        objects whose geometry it gets wrong it is worse than that.
-      </p>
-    </div>
-  </section>
-
-  <!-- 4D grasp viewer -->
-  <section class="section hero is-light" id="lift4d">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Every Candidate, Replayed in 4D</h2>
-      <p class="ai-section-intro">
-        One held-out test scene per grocery. The cloud fuses the simulator's eight ring cameras, and each candidate
-        grasp is replayed through the same MuJoCo rollout that labelled it, so the object moves through X, Y, Z and
-        t exactly as its outcome was decided. Drag to orbit, scroll to zoom, pick a grasp to replay it.
-      </p>
-
-      <div class="m4d" id="m4d">
-        <div class="m4d-objects" id="m4d-objects" role="group" aria-label="Test scene"></div>
-        <div class="m4d-main">
-          <div class="m4d-stage">
-            <canvas id="m4d-canvas" role="img" aria-label="Interactive 3D point cloud of the test scene and the replayed grasp"></canvas>
-            <div class="m4d-hud"><span id="m4d-phase">Loading</span><span id="m4d-time"></span></div>
-            <div class="m4d-liftbar">
-              <span id="m4d-lift">object raised 0 mm</span>
-              <div class="m4d-liftbar-track"><i id="m4d-lift-fill"></i><b class="m4d-liftbar-mark" id="m4d-lift-mark"></b></div>
-            </div>
-            <div class="m4d-legend">
-              <span><i class="m4d-legend-ramp"></i>trail, t = 0 to now</span>
-              <span><i class="m4d-legend-ring"></i>success height</span>
-            </div>
-            <div class="m4d-loading is-on">Loading the point cloud&hellip;</div>
-          </div>
-          <aside class="m4d-side">
-            <figure class="m4d-input">
-              <img id="m4d-input" alt="" width="96" height="96">
-              <figcaption>What the encoder scored: view 0 alone, 96&nbsp;&times;&nbsp;96 RGB-D (colour shown). The
-                fused cloud is for the reader, not the model.</figcaption>
-            </figure>
-            <div class="m4d-cands-head"><span>Candidates, ranked by MSP</span><span>MSP score</span></div>
-            <div class="m4d-cands" id="m4d-cands"></div>
-          </aside>
-        </div>
-        <div class="m4d-controls">
-          <button class="m4d-play" id="m4d-play" type="button" aria-label="Play"><i class="fas fa-play"></i><i class="fas fa-pause"></i></button>
-          <input type="range" id="m4d-scrub" min="0" max="84" value="0" step="1" aria-label="Time">
-          <div class="m4d-speeds" role="group" aria-label="Playback speed">
-            <button class="ax-pill m4d-speed" type="button" data-speed="0.25">0.25&times;</button>
-            <button class="ax-pill m4d-speed is-active" type="button" data-speed="0.5">0.5&times;</button>
-            <button class="ax-pill m4d-speed" type="button" data-speed="1">1&times;</button>
-          </div>
-          <button class="m4d-toggle" id="m4d-trail" type="button" aria-pressed="true">4D trail</button>
-          <button class="m4d-toggle" id="m4d-axes" type="button" aria-pressed="true">All jaw axes</button>
-          <button class="m4d-toggle" id="m4d-reset" type="button">Reset view</button>
-        </div>
-      </div>
-
-      <p class="ai-table-note">
-        <span id="m4d-summary"></span> Thirteen scenes illustrate the comparison; they do not evaluate it. The
-        1,997-scene result is the act-rate panel above.
-      </p>
-      <p class="ai-table-note">
-        <strong>How the scenes were chosen.</strong> For each object, the first test scene in corpus order that the
-        within-scene AUC can score: at least three executable candidates, with both a lift and a failure among them.
-        Scores are the stored L1 test scores; nothing is retrained. The object is rigid, so its fused points are
-        moved by the simulator's recorded pose every 20&nbsp;ms, and the trail draws earlier poses from dark (t = 0)
-        to yellow (now). Gaps in the table are floor that no camera saw: outside every field of view, or hidden behind the object. A candidate whose open
-        jaws already intersect the scene is never executed and counts as a failure. <span id="m4d-note"></span>
-      </p>
-    </div>
-  </section>
-
-  <!-- Certificate -->
-  <section class="section" id="certificate">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">The Certificate Holds on Images</h2>
-      <p class="ai-section-intro">
-        Split conformal calibration on a held-out fold, evaluated over 16,000 test points on real RGB-D. Pick the
-        risk level.
-      </p>
-
-      <div class="ax-pills">
-        <button class="ax-pill" data-alpha="0.05">&alpha; = 0.05</button>
-        <button class="ax-pill is-active" data-alpha="0.1">&alpha; = 0.10</button>
-        <button class="ax-pill" data-alpha="0.2">&alpha; = 0.20</button>
-      </div>
-
-      <div class="ax-cert">
-        <div class="ax-cert-item">
-          <div class="ax-cert-label">Target coverage</div>
-          <div class="ax-cert-val" id="ax-cert-target">0.90</div>
-          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-target"></span></div>
-        </div>
-        <div class="ax-cert-item is-key">
-          <div class="ax-cert-label">Empirical coverage</div>
-          <div class="ax-cert-val" id="ax-cert-coverage">0.8973</div>
-          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-coverage"></span></div>
-        </div>
-        <div class="ax-cert-item">
-          <div class="ax-cert-label">Certified precision</div>
-          <div class="ax-cert-val" id="ax-cert-precision">0.7435</div>
-          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-precision"></span></div>
-        </div>
-        <div class="ax-cert-item">
-          <div class="ax-cert-label">Abstention rate</div>
-          <div class="ax-cert-val" id="ax-cert-abstention">0.7430</div>
-          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-abstention"></span></div>
-        </div>
-        <div class="ax-cert-item">
-          <div class="ax-cert-label">Certified action fraction</div>
-          <div class="ax-cert-val" id="ax-cert-certified">0.2347</div>
-          <div class="ax-cert-bar"><span class="ax-cert-fill" id="ax-certbar-certified"></span></div>
-        </div>
-      </div>
-
-      <div class="ax-callout" id="ax-cert-gap"></div>
-
-      <div class="ax-callout">
-        <strong>A high abstention rate is not a bug.</strong> From a photograph you cannot see friction, mass or the
-        centre of mass, so on most scenes no action can be <em>certified</em> at the requested confidence and the
-        system declines rather than guessing. That is the framework being honest about what an image contains.
-        Bringing the number down is exactly what active touch is for, and the tables above show what a second
-        viewpoint already buys.
-      </div>
-
-      <figure class="ai-figure">
-        <img src="static/images/fig_coverage.png" class="ai-zoomable"
-             alt="Two panels: empirical coverage tracks the nominal target along the diagonal at 0.80, 0.90 and 0.95; and the cost of the certificate, where both certified precision and abstention rate rise with the target">
-        <figcaption>
-          <strong>Coverage tracks its target, and the certificate has a price.</strong> Tightening the risk level
-          raises certified precision and raises the abstention rate with it: the system buys confidence by acting
-          less often, which is the trade a deployed manipulator should be allowed to choose.
-        </figcaption>
-      </figure>
-
-      <h3 class="title is-5 bx-sub">Coverage for the grasp that is actually executed</h3>
-      <p class="ai-table-note">
-        The filter is calibrated over observation&ndash;action pairs, but the controller executes an argmax, and a
-        data-dependent selection is not exchangeable with the calibration pairs. Calibrating on the selected action
-        of each calibration scene applies the same rule to both folds and restores exchangeability at the scene
-        level.
-      </p>
-      <div class="ai-table-wrap">
-        <table class="ai-table bx-exec">
-          <caption class="ai-caption">Coverage, then certified fraction, at three targets</caption>
-          <thead>
-            <tr>
-              <th class="ai-th-text" scope="col" rowspan="2">Target</th>
-              <th scope="colgroup" colspan="2">Pairwise filter, all pairs</th>
-              <th scope="colgroup" colspan="2">Same filter, executed grasp</th>
-              <th class="ai-col-avg" scope="colgroup" colspan="2">Recalibrated on the selected action</th>
-            </tr>
-            <tr>
-              <th scope="col">cov.</th><th scope="col">cert.</th>
-              <th scope="col">cov.</th><th scope="col">cert.</th>
-              <th scope="col">cov.</th><th scope="col">cert.</th>
-            </tr>
-          </thead>
-          <tbody id="bx-exec-body"></tbody>
-        </table>
-      </div>
-      <p class="ai-table-note">
-        On the executed grasp the published filter is conservative rather than invalid: 0.960 coverage at a 0.95
-        target. Recalibrated on the selected action it lands at 0.955 and certifies slightly more executed grasps,
-        so the scene-level statement is both correct and less conservative, and it is the one the paper adopts.
-      </p>
-    </div>
-  </section>
-
-  <!-- Rate -->
-  <section class="section hero is-light" id="rate">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">What the Link Has to Carry</h2>
-      <p class="ai-section-intro">
-        The sufficiency budget &beta; multiplies the relevance term, so a larger &beta; purchases sufficiency at the
-        price of rate. Hover a point for its coverage and abstention.
-      </p>
-
-      <div class="ax-chart-card ax-chart-host" id="ax-frontier"></div>
-
-      <p class="ai-table-note">
-        The purchased outcome is success: <em>D<sub>succ</sub></em> falls monotonically as the rate rises, from
-        0.656 at 0.004 nats to 0.412 at 3.29 nats. The unweighted total over all three channels need not, because it
-        is dominated by the margin and slip likelihoods the budget deliberately sacrifices, and reporting only that
-        total would make a working budget look broken. Coverage holds near 0.90 across the whole sweep, so the
-        certificate is not being paid for out of the rate.
-      </p>
-
-      <div class="ax-cards">
-        <div class="ax-card">
-          <div class="ax-card-eyebrow">Why an edge system cares</div>
-          <h3>0.53 nats per scene is what the belief costs to send</h3>
-          <p>The rate is not a regulariser we chose for convenience: it is the mutual information between the
-            observation and the code, which on a networked manipulator is the payload. A pipeline that ships a
-            reconstructed mesh or a dense pose distribution ships orders of magnitude more, and the evidence above
-            says the extra bits do not change the decision. Measured as a payload rather than a code
-            length, the belief quantised to two bits per dimension and entropy-coded is
-            <strong>10&nbsp;bytes per scene</strong>, a measured payload rather than an fp32 storage figure, which is
-            <strong>14,750&times;</strong> smaller than the 147.5&nbsp;kB of one RGB-D frame. Ten bytes cost
-            nothing that matters: within-scene AUC 0.636 against 0.638 at fp32, coverage 0.906 against 0.904.
-            One bit per dimension is the cliff, at 0.584.</p>
-
-          <p>Loss behaves the way a certificate should. As packet loss rises from 0 to 20&nbsp;% the system acts
-            on 0.628 down to 0.507 of scenes while success given action stays flat between 0.852 and 0.860. A
-            degrading link costs throughput, not reliability.</p>
-        </div>
-        <div class="ax-card">
-          <div class="ax-card-eyebrow">The cheap end of the frontier</div>
-          <h3>At 0.004 nats the certificate still covers 0.896</h3>
-          <p>The lowest-rate point on the sweep holds its coverage target and abstains slightly less than the
-            deployed point. Rate and calibration are close to independent here, which is the property that makes the
-            interface deployable on a constrained link rather than only in a lab.</p>
-        </div>
+    <div class="stage" style="--k:5" data-open="false">
+      <button class="stage-tab" aria-expanded="false" aria-controls="stage-5">Decide</button>
+      <div class="stage-body" id="stage-5">
+        <div class="stage-text"><h3>Decide</h3><p>Act on the best grasp, certify it, or look again.</p></div>
+        <img src="static/img/stage_decide.jpg" width="922" height="612" loading="lazy" alt="Simulated success under every sample, the posterior mean per grasp, and the certificate and execution checks of the chosen grasp.">
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Learned baselines and the rate-quality frontier -->
-  <section class="section" id="baselines">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Learned Baselines, Priced in Bits</h2>
-      <p class="ai-section-intro">
-        Every method scores the same candidate grasps. Two learned competitors matter: the same network with the rate
-        term removed, which isolates the bottleneck, and the Dex-Net grasp-quality architecture retrained on this
-        corpus.
-      </p>
+<section class="section proof" id="table" aria-labelledby="table-title">
+  <h2 id="table-title" class="stepped wrap" data-reveal><span>Every method,</span><span>one table</span></h2>
+  <div class="table-wrap wrap" data-reveal style="--i:1">
+    <table>
+      <caption class="small muted">LM-Grasp test split, 2,579 scenes. Top-1: success of the chosen grasp. AUC: ranking within a scene. Sel@25%: success on the most confident quarter of scenes. Cert.: certified fraction and precision at α = 0.1. Mean ± s.d. over training seeds.</caption>
+      <thead><tr><th scope="col">Method</th><th scope="col">n</th><th scope="col">Top-1</th><th scope="col">AUC</th><th scope="col">Sel@25%</th><th scope="col">Cert.</th></tr></thead>
+    <tbody><tr class="group"><th colspan="6" scope="rowgroup">Learned outcome scorers (no object model)</th></tr>
+      <tr><th scope="row">Dex-Net 2.0 architecture</th><td data-label="n">5</td><td data-label="Top-1">0.637 ± 0.013</td><td data-label="AUC">0.829</td><td data-label="Sel@25%">0.902</td><td data-label="Cert.">0.611 / 0.831</td></tr>
+      <tr><th scope="row">RGB-D outcome scorer</th><td data-label="n">5</td><td data-label="Top-1">0.683 ± 0.006</td><td data-label="AUC">0.876</td><td data-label="Sel@25%">0.929</td><td data-label="Cert.">0.647 / 0.857</td></tr>
+      <tr><th scope="row">Deep ensemble of 5</th><td data-label="n">3</td><td data-label="Top-1">0.705 ± 0.006</td><td data-label="AUC">0.891</td><td data-label="Sel@25%">0.938</td><td data-label="Cert.">0.664 / 0.884</td></tr>
+    </tbody>
+    <tbody><tr class="group"><th colspan="6" scope="rowgroup">Learned fusion with the planner score</th></tr>
+      <tr><th scope="row">POISE (scorer + point score)</th><td data-label="n">5</td><td data-label="Top-1">0.821 ± 0.002</td><td data-label="AUC">0.958</td><td data-label="Sel@25%">0.963</td><td data-label="Cert.">0.874 / 0.927</td></tr>
+      <tr><th scope="row">POISE-U (scorer + posterior score)</th><td data-label="n">5</td><td data-label="Top-1">0.859 ± 0.002</td><td data-label="AUC"><span class="second" title="second best">0.988</span></td><td data-label="Sel@25%">0.985</td><td data-label="Cert."><span class="second" title="second best">0.851 / 0.972</span></td></tr>
+    </tbody>
+    <tbody><tr class="group"><th colspan="6" scope="rowgroup">Pose-then-plan (mesh, simulator and physics prior at decision time)</th></tr>
+      <tr><th scope="row">Pose regressor + planner</th><td data-label="n">5</td><td data-label="Top-1">0.707 ± 0.007</td><td data-label="AUC">0.859</td><td data-label="Sel@25%">0.817</td><td data-label="Cert.">–</td></tr>
+      <tr><th scope="row">FoundationPose + planner</th><td data-label="n">1</td><td data-label="Top-1">0.791</td><td data-label="AUC">0.935</td><td data-label="Sel@25%">0.902</td><td data-label="Cert.">0.844 / 0.904</td></tr>
+      <tr><th scope="row">FoundationPose + planner, 64 draws</th><td data-label="n">1</td><td data-label="Top-1">0.814</td><td data-label="AUC">0.951</td><td data-label="Sel@25%">0.919</td><td data-label="Cert.">–</td></tr>
+      <tr class="ours"><th scope="row">Pose posterior (ours)</th><td data-label="n">1</td><td data-label="Top-1"><span class="second" title="second best">0.859</span></td><td data-label="AUC">0.987</td><td data-label="Sel@25%"><span class="second" title="second best">0.988</span></td><td data-label="Cert."><strong title="best">0.849 / 0.972</strong></td></tr>
+      <tr class="ours"><th scope="row">+ second view (ours)</th><td data-label="n">1</td><td data-label="Top-1"><strong title="best">0.865</strong></td><td data-label="AUC"><strong title="best">0.993</strong></td><td data-label="Sel@25%"><strong title="best">0.997</strong></td><td data-label="Cert.">–</td></tr>
+    </tbody>
+    <tbody><tr class="group"><th colspan="6" scope="rowgroup">Privileged references</th></tr>
+      <tr><th scope="row">Annotated pose + planner</th><td data-label="n">1</td><td data-label="Top-1">0.856</td><td data-label="AUC">0.990</td><td data-label="Sel@25%">0.984</td><td data-label="Cert.">0.854 / 0.974</td></tr>
+      <tr><th scope="row">Oracle (best candidate)</th><td data-label="n">1</td><td data-label="Top-1">0.877</td><td data-label="AUC">–</td><td data-label="Sel@25%">–</td><td data-label="Cert.">–</td></tr>
+    </tbody>
+    </table>
+  </div>
+  <div class="charts">
+    <figure data-reveal><img src="static/img/fig3_pose_gap.png" width="2131" height="640" loading="lazy" alt="Grasp success falls as the pose error grows while the ADD(-S) pass rate stays high; binned by FoundationPose error, the posterior planner tracks the annotated pose."><figcaption class="small">Pose error against grasp success</figcaption></figure>
+    <figure data-reveal style="--i:1"><img src="static/img/fig4_results.png" width="2131" height="640" loading="lazy" alt="Top-1 success of every method, success on the most confident scenes, and conformal certificates."><figcaption class="small">Every method, and when to act</figcaption></figure>
+    <figure data-reveal style="--i:2"><img src="static/img/fig5_analysis.png" width="2131" height="640" loading="lazy" alt="Calibration of the posterior in rotation and translation, and the gain from a second view of the least confident scenes."><figcaption class="small">Calibration and a second view</figcaption></figure>
+  </div>
+</section>
 
-      <div class="ai-table-wrap">
-        <table class="ai-table">
-          <caption class="ai-caption">Ranking quality and transport cost on the same candidates; payload is entropy-coded bytes per scene</caption>
-          <thead>
-            <tr>
-              <th class="ai-th-text" scope="col">Method</th>
-              <th scope="col">Pooled AUC</th>
-              <th class="ai-col-avg" scope="col">Within-scene</th>
-              <th scope="col">Top-1</th>
-              <th scope="col">fp32</th>
-              <th scope="col">2-bit</th>
-            </tr>
-          </thead>
-          <tbody id="bx-table-body"></tbody>
-        </table>
-      </div>
-      <p class="ai-table-note">
-        Removing the rate term leaves ranking where it was, 0.653 against 0.640 within-scene: compression costs
-        nothing in ranking. The retrained GQ-CNN ranks better, 0.851 &plusmn; 0.006 over three seeds, because it crops
-        and rotates the depth patch by the candidate pose, so the action enters through the receptive field. That
-        representation exists only after a grasp is applied, so an edge deployment sends one payload per candidate;
-        MSP's statistic is formed before the grasp is chosen and one payload scores all eight.
-      </p>
-
-      <div class="ax-pills" id="bx-metric" role="group" aria-label="Quality metric">
-        <button class="ax-pill is-active" type="button" data-metric="within">Within-scene AUC</button>
-        <button class="ax-pill" type="button" data-metric="top1">Top-1 success</button>
-        <button class="ax-pill" type="button" data-metric="pooled">Pooled AUC</button>
-      </div>
-      <div class="ax-chart-card ax-chart-host" id="bx-frontier"></div>
-      <p class="ai-table-note">
-        One quantiser, swept from 1 to 32 bits per dimension, applied to both representations and measured as
-        entropy-coded bits. MSP saturates by about 140 bits per scene. At the tightest budget it reaches 0.591
-        within-scene from 48 bits, where the per-candidate baseline reaches 0.574 from 382 bits; given two orders of
-        magnitude more bandwidth the ordering reverses. Which side of the crossing a deployment sits on is a link
-        budget question, and MSP owns the low-rate side. Hover a point for its bit depth.
-      </p>
-    </div>
-  </section>
-
-  <!-- Objects -->
-  <section class="section hero is-light" id="objects">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Thirteen Objects, One Table</h2>
-      <p class="ai-section-intro">
-        Base success rates span 0.043 to 0.999, which is the entire reason a pooled AUC cannot be trusted here.
-        Filter by geometry; click a header to sort.
-      </p>
-
-      <div class="ax-pills">
-        <button class="ax-pill is-active" data-geom="all">All 13</button>
-        <button class="ax-pill" data-geom="box">Box-shaped, reconstruction exact</button>
-        <button class="ax-pill" data-geom="curved">Curved, reconstruction wrong</button>
-      </div>
-
-      <div class="ax-readout">
-        <div>
-          <div class="ax-readout-val" id="ax-obj-n">13</div>
-          <div class="ax-readout-label">Objects in view</div>
-        </div>
-        <div>
-          <div class="ax-readout-val" id="ax-obj-wa">0.000</div>
-          <div class="ax-readout-label">Ferrari-Canny, mean over rankable objects</div>
-        </div>
-        <div>
-          <div class="ax-readout-val" id="ax-obj-wm">0.000</div>
-          <div class="ax-readout-label">MSP, mean over rankable objects</div>
-        </div>
-      </div>
-
-      <p class="ai-table-note" id="ax-obj-note" style="text-align:center"></p>
-
-      <div class="ai-table-wrap">
-        <table class="ai-table" id="ax-obj-table">
-          <thead>
-            <tr>
-              <th class="ai-sortable ai-th-text" data-sort="name" scope="col">Object <i class="fas fa-sort"></i></th>
-              <th class="ai-sortable" data-sort="base" scope="col">Base rate <i class="fas fa-sort"></i></th>
-              <th class="ai-sortable" data-sort="wa" scope="col">Ferrari-Canny <i class="fas fa-sort"></i></th>
-              <th class="ai-sortable" data-sort="wm" scope="col">MSP <i class="fas fa-sort"></i></th>
-              <th class="ai-sortable" data-sort="rank" scope="col">rank J <i class="fas fa-sort"></i></th>
-              <th class="ai-sortable" data-sort="nullDim" scope="col">dim ker J <i class="fas fa-sort"></i></th>
-              <th class="ai-sortable" data-sort="angle" scope="col">Max angle &deg; <i class="fas fa-sort"></i></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <p class="ai-table-note">
-        The two AUC columns are <strong>within-scene</strong>, averaged over the scenes where the ranking question is
-        well posed, and the three figures above them are macro-means over the objects in view, which is a different
-        aggregation from the corpus-level 0.548 and 0.639 quoted earlier: a scene needs at least three executable grasps and both a success and a failure. An object lifted
-        successfully 99.9% of the time supplies almost none, so it is marked <em>not rankable</em> rather than given
-        an AUC over two or three scenes that would read as a catastrophic failure. The last three columns are the
-        identifiability diagnostic: where the kernel of the outcome Jacobian is non-trivial the predicted
-        unidentifiable subspace matches the independently measured one to under a degree, and where the Jacobian has
-        full rank the theorem makes no claim and the cell is a dash.
-      </p>
-
-      <figure class="ai-figure">
-        <img src="static/images/fig_per_object.png" class="ai-zoomable"
-             alt="Per-object chart: grey bars give base success rates from 0.04 to 0.999, with Ferrari-Canny and MSP within-scene AUC markers above them; three objects are labelled no rankable scenes">
-        <figcaption>
-          <strong>Base rates span the whole range, which is why a pooled AUC cannot be trusted.</strong> Objects with
-          too few rankable scenes get their base-rate bar and no marker, which is the honest thing to draw: the
-          question cannot be asked of them.
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- Ablations -->
-  <section class="section" id="ablations">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">What Each Piece Is Worth</h2>
-      <p class="ai-section-intro">
-        Scored on the within-scene axis, because a pooled AUC cannot referee these: a model that has learned nothing
-        but object identity still scores about 0.72 pooled, so every ablation would look harmless.
-      </p>
-
-      <div class="ax-abl" id="ax-ablations"></div>
-
-      <p class="ai-table-note">
-        The dotted line is chance. <em>Response</em> is the standard deviation of the score across a scene's
-        candidate grasps: when it collapses towards zero the model has stopped attending to the action and is
-        emitting one number per scene.
-      </p>
-
-      <div class="ax-cards">
-        <div class="ax-card">
-          <div class="ax-card-eyebrow">The budget is load-bearing</div>
-          <h3>A uniform budget destroys the ranker, and a pooled AUC would hide it</h3>
-          <p>Placing an equal multiplier on outcome channels whose log-likelihoods live on incommensurate scales
-            starves success, the one outcome the decision rule reads. Within-scene AUC falls to 0.511 and the action
-            response collapses to 0.002: the model has stopped ranking grasps entirely. Its pooled AUC is still
-            0.710, which is why the axis matters.</p>
-        </div>
-        <div class="ax-card">
-          <div class="ax-card-eyebrow">Perception is doing the work</div>
-          <h3>Replacing the belief with a constant costs everything</h3>
-          <p>With the code ablated the head can only exploit an action prior, and it lands at 0.506 within-scene,
-            chance. This is the control for the reviewer concern that the head could ignore the belief and memorise
-            action priors, and it does not survive.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Limits -->
-  <section class="section hero is-light" id="limits">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Evidence Boundaries</h2>
-      <p class="ai-section-intro">
-        What the measurements do not cover, stated rather than left for a reader to discover.
-      </p>
-
-      <div class="ai-limits">
-        <div class="ai-limit">
-          <h3>The identifiability theorem is often vacuous</h3>
-          <p>For 6 of 13 objects the outcome Jacobian has full rank and its kernel is trivial, so nothing is
-            continuously unidentifiable and the theorem says nothing at all. Where it does have content the
-            prediction matches an independently measured subspace to under a degree, but the reach is genuinely
-            limited and the per-object table shows it case by case.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>Ranking transfers to unseen objects, but less than half of it</h3>
-          <p>Held out object by object, within-scene AUC drops from the in-distribution 0.639 to
-            <strong>0.569</strong> on the seven objects whose base rates make the ranking question well posed. It
-            stays above chance, so the representation does carry grasp-ranking structure to geometry it has never
-            seen, but the claim that it transfers intact is not supported at this scope.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>A held-out object breaks the fixed quantile until feedback arrives</h3>
-          <p>Calibrated on twelve objects and deployed on a thirteenth, the fixed quantile undercovers badly:
-            mean pairwise coverage <strong>0.728</strong>, worst 0.533 on ketchup. An anchored full-feedback
-            update lifts it to <strong>0.883</strong> and compresses dispersion from 0.110 to 0.032, worst case
-            0.780. This is a clustered empirical diagnostic under simulated shift, not a selective-feedback
-            validity claim.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>Three objects cannot be scored at all</h3>
-          <p>Milk, orange juice and bbq sauce are lifted so reliably that almost no scene contains both a success and
-            a failure, so the within-scene ranking question is not well posed for them. They are marked, not
-            imputed.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>The certificate is marginal, not conditional</h3>
-          <p>Coverage holds over the test distribution as a whole. It is not a per-object or per-scene guarantee, and
-            certified precision, the number an operator actually feels, is a different estimand that we report
-            separately rather than in place of it.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>Abstention is high at the deployed point</h3>
-          <p>0.743 at &alpha; = 0.1. The framework declines on most scenes because a photograph does not contain
-            friction or mass. Active touch is the intended remedy and the equations for it exist, but the touch loop
-            is not wired into the deployed system.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>Active perception is evaluated in simulation over 8 views</h3>
-          <p>512 scenes, 8 candidate viewpoints, ambiguity reduction rather than end-to-end success. The honest
-            estimate is 16.7% and most of that, 13.8 points, comes from taking a second view at all rather than from
-            choosing it.</p>
-        </div>
-        <div class="ai-limit">
-          <h3>One corpus, one gripper, no real robot</h3>
-          <p>Thirteen scanned LIBERO groceries under a rigid-body lift criterion. Real meshes rather than parametric
-            primitives is what makes the reconstruction-gap experiment possible at all, but nothing here measures
-            sim-to-real transfer of the belief or the certificate.</p>
-        </div>
-      </div>
-
-      <figure class="ai-figure">
-        <img src="static/images/fig_within_scene.png" class="ai-zoomable"
-             alt="Bar chart of within-scene AUC: Ferrari-Canny on the reconstruction at 0.548 and MSP on outcomes at 0.639, with a chance line at 0.5">
-        <figcaption>
-          <strong>The headline contrast on the axis that cannot be gamed.</strong> Drawn within-scene, never pooled:
-          MSP once scored 0.716 pooled while being unable to rank two grasps of the same object, which is the
-          measurement error this axis exists to prevent.
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- BibTeX -->
-  <section class="section" id="bibtex">
-    <div class="container is-max-desktop content">
-      <div class="bibtex-header">
-        <h2 class="title">BibTeX</h2>
-        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
-          <i class="fas fa-copy"></i>
-          <span class="copy-text">Copy</span>
-        </button>
-      </div>
-      <pre id="bibtex-code"><code>@inproceedings{sarowar2027msp,
-title     = {Learning Manipulation-Sufficient Representations via Outcome Bottlenecks},
-author    = {Md Selim Sarowar and Sungho Kim},
-booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
-year      = {2027},
-note      = {Under review},
-url       = {https://physical-agi.github.io/MSP-FRAMEWORK/}
-}</code></pre>
-      <p class="ai-table-note">
-        Placeholder entry. It will be replaced with the conference entry once the paper is accepted.
-      </p>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="content has-text-centered">
-        <p>
-          Code at <a href="https://github.com/s-elim/msp-framework" target="_blank" rel="noopener">s-elim/msp-framework</a>.
-          This page is built from
-          <a href="https://github.com/Physical-AGI/MSP-FRAMEWORK" target="_blank" rel="noopener">Physical-AGI/MSP-FRAMEWORK</a>.
-        </p>
-        <p>
-          Page template adapted from <a href="https://nerfies.github.io" target="_blank" rel="noopener">Nerfies</a>,
-          licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
-        </p>
-      </div>
-    </div>
-  </footer>
+<section class="section gallery" id="gallery" aria-labelledby="gallery-title">
+  <div class="gallery-head wrap">
+    <h2 id="gallery-title" class="head" data-reveal>Scenes and rollouts</h2>
+    <p class="statement-small" data-reveal style="--i:1">Estimates in orange, posterior samples in teal, annotations dashed. Renders are MuJoCo rollouts of the chosen grasps.</p>
+  </div>
+  <div class="sheet wrap">
+    <figure><img src="static/img/gallery/lmo_000652_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 652, boxes"><figcaption>LM-O frame 652, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000652_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 652, depth"><figcaption>LM-O frame 652, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000047_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 47, boxes"><figcaption>LM-O frame 47, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000047_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 47, depth"><figcaption>LM-O frame 47, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000491_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 491, boxes"><figcaption>LM-O frame 491, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000491_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 491, depth"><figcaption>LM-O frame 491, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000097_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 97, boxes"><figcaption>LM-O frame 97, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000097_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 97, depth"><figcaption>LM-O frame 97, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000003_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 3, boxes"><figcaption>LM-O frame 3, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000003_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 3, depth"><figcaption>LM-O frame 3, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000368_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 368, boxes"><figcaption>LM-O frame 368, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000368_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 368, depth"><figcaption>LM-O frame 368, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000750_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 750, boxes"><figcaption>LM-O frame 750, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_000750_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 750, depth"><figcaption>LM-O frame 750, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_001069_boxes.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 1069, boxes"><figcaption>LM-O frame 1069, boxes</figcaption></figure>
+    <figure><img src="static/img/gallery/lmo_001069_cloud.jpg" width="960" height="720" loading="lazy" alt="LM-O frame 1069, depth"><figcaption>LM-O frame 1069, depth</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_point_0.jpg" width="320" height="320" loading="lazy" alt="Lamp, point-estimate grasp at the estimate: lifted"><figcaption>Lamp, point-estimate grasp at the estimate: lifted</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_point_1.jpg" width="320" height="320" loading="lazy" alt="Lamp, point-estimate grasp at pose sample 1: lifted"><figcaption>Lamp, point-estimate grasp at pose sample 1: lifted</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_point_2.jpg" width="320" height="320" loading="lazy" alt="Lamp, point-estimate grasp at pose sample 2: dropped"><figcaption>Lamp, point-estimate grasp at pose sample 2: dropped</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_point_3.jpg" width="320" height="320" loading="lazy" alt="Lamp, point-estimate grasp at pose sample 4: dropped"><figcaption>Lamp, point-estimate grasp at pose sample 4: dropped</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_posterior_0.jpg" width="320" height="320" loading="lazy" alt="Lamp, posterior grasp at the estimate: lifted"><figcaption>Lamp, posterior grasp at the estimate: lifted</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_posterior_1.jpg" width="320" height="320" loading="lazy" alt="Lamp, posterior grasp at pose sample 1: lifted"><figcaption>Lamp, posterior grasp at pose sample 1: lifted</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_posterior_2.jpg" width="320" height="320" loading="lazy" alt="Lamp, posterior grasp at pose sample 2: lifted"><figcaption>Lamp, posterior grasp at pose sample 2: lifted</figcaption></figure>
+    <figure><img src="static/img/gallery/lamp_posterior_3.jpg" width="320" height="320" loading="lazy" alt="Lamp, posterior grasp at pose sample 4: lifted"><figcaption>Lamp, posterior grasp at pose sample 4: lifted</figcaption></figure>
+  </div>
+</section>
 </main>
 
-<button class="scroll-to-top" onclick="scrollToTop()" aria-label="Scroll back to top">
-  <i class="fas fa-arrow-up"></i>
-</button>
+<footer class="footer" aria-labelledby="footer-title">
+  <h2 id="footer-title" class="sr-only">Paper, code and contact</h2>
+  <div class="blocks" aria-hidden="true">
+    <svg viewBox="0 0 956 116" preserveAspectRatio="xMidYMid slice" role="presentation"><rect x="0" y="0" width="36" height="36"/><rect class="bit" x="22" y="6" width="8" height="8"/><rect class="bit" x="6" y="14" width="8" height="8"/><rect class="bit" x="14" y="22" width="8" height="8"/><rect x="80" y="0" width="36" height="36"/><rect class="bit" x="102" y="6" width="8" height="8"/><rect class="bit" x="86" y="14" width="8" height="8"/><rect class="bit" x="94" y="14" width="8" height="8"/><rect x="160" y="0" width="36" height="36"/><rect class="bit" x="166" y="6" width="8" height="8"/><rect class="bit" x="174" y="6" width="8" height="8"/><rect class="bit" x="182" y="6" width="8" height="8"/><rect class="bit" x="166" y="14" width="8" height="8"/><rect class="bit" x="182" y="14" width="8" height="8"/><rect class="bit" x="166" y="22" width="8" height="8"/><rect x="240" y="0" width="36" height="36"/><rect class="bit" x="254" y="6" width="8" height="8"/><rect class="bit" x="262" y="6" width="8" height="8"/><rect class="bit" x="246" y="14" width="8" height="8"/><rect class="bit" x="254" y="14" width="8" height="8"/><rect class="bit" x="262" y="22" width="8" height="8"/><rect x="320" y="0" width="36" height="36"/><rect class="bit" x="326" y="22" width="8" height="8"/><rect x="400" y="0" width="36" height="36"/><rect class="bit" x="406" y="6" width="8" height="8"/><rect x="480" y="0" width="36" height="36"/><rect class="bit" x="486" y="6" width="8" height="8"/><rect class="bit" x="502" y="22" width="8" height="8"/><rect x="560" y="0" width="36" height="36"/><rect class="bit" x="566" y="6" width="8" height="8"/><rect class="bit" x="582" y="6" width="8" height="8"/><rect class="bit" x="574" y="14" width="8" height="8"/><rect class="bit" x="566" y="22" width="8" height="8"/><rect x="640" y="0" width="36" height="36"/><rect class="bit" x="654" y="14" width="8" height="8"/><rect class="bit" x="662" y="14" width="8" height="8"/><rect x="720" y="0" width="36" height="36"/><rect class="bit" x="726" y="6" width="8" height="8"/><rect class="bit" x="734" y="14" width="8" height="8"/><rect class="bit" x="726" y="22" width="8" height="8"/><rect class="bit" x="742" y="22" width="8" height="8"/><rect x="800" y="0" width="36" height="36"/><rect class="bit" x="806" y="6" width="8" height="8"/><rect class="bit" x="822" y="6" width="8" height="8"/><rect class="bit" x="822" y="14" width="8" height="8"/><rect class="bit" x="806" y="22" width="8" height="8"/><rect class="bit" x="822" y="22" width="8" height="8"/><rect x="880" y="0" width="36" height="36"/><rect class="bit" x="894" y="6" width="8" height="8"/><rect class="bit" x="902" y="6" width="8" height="8"/><rect class="bit" x="886" y="14" width="8" height="8"/><rect class="bit" x="902" y="14" width="8" height="8"/><rect class="bit" x="894" y="22" width="8" height="8"/><rect x="40" y="40" width="36" height="36"/><rect class="bit" x="46" y="46" width="8" height="8"/><rect class="bit" x="54" y="46" width="8" height="8"/><rect class="bit" x="46" y="54" width="8" height="8"/><rect class="bit" x="54" y="54" width="8" height="8"/><rect class="bit" x="46" y="62" width="8" height="8"/><rect class="bit" x="54" y="62" width="8" height="8"/><rect x="120" y="40" width="36" height="36"/><rect class="bit" x="126" y="46" width="8" height="8"/><rect class="bit" x="134" y="46" width="8" height="8"/><rect class="bit" x="142" y="46" width="8" height="8"/><rect class="bit" x="142" y="54" width="8" height="8"/><rect class="bit" x="126" y="62" width="8" height="8"/><rect class="bit" x="134" y="62" width="8" height="8"/><rect class="bit" x="142" y="62" width="8" height="8"/><rect x="200" y="40" width="36" height="36"/><rect class="bit" x="214" y="62" width="8" height="8"/><rect x="280" y="40" width="36" height="36"/><rect class="bit" x="286" y="46" width="8" height="8"/><rect class="bit" x="294" y="46" width="8" height="8"/><rect class="bit" x="302" y="46" width="8" height="8"/><rect class="bit" x="294" y="54" width="8" height="8"/><rect class="bit" x="286" y="62" width="8" height="8"/><rect class="bit" x="302" y="62" width="8" height="8"/><rect x="360" y="40" width="36" height="36"/><rect class="bit" x="374" y="46" width="8" height="8"/><rect class="bit" x="366" y="54" width="8" height="8"/><rect class="bit" x="374" y="54" width="8" height="8"/><rect class="bit" x="366" y="62" width="8" height="8"/><rect class="bit" x="374" y="62" width="8" height="8"/><rect class="bit" x="382" y="62" width="8" height="8"/><rect x="440" y="40" width="36" height="36"/><rect class="bit" x="446" y="46" width="8" height="8"/><rect class="bit" x="454" y="46" width="8" height="8"/><rect class="bit" x="454" y="62" width="8" height="8"/><rect class="bit" x="462" y="62" width="8" height="8"/><rect x="520" y="40" width="36" height="36"/><rect class="bit" x="526" y="46" width="8" height="8"/><rect class="bit" x="542" y="54" width="8" height="8"/><rect class="bit" x="526" y="62" width="8" height="8"/><rect class="bit" x="542" y="62" width="8" height="8"/><rect x="600" y="40" width="36" height="36"/><rect class="bit" x="606" y="46" width="8" height="8"/><rect class="bit" x="614" y="46" width="8" height="8"/><rect class="bit" x="622" y="46" width="8" height="8"/><rect class="bit" x="614" y="54" width="8" height="8"/><rect class="bit" x="622" y="54" width="8" height="8"/><rect class="bit" x="606" y="62" width="8" height="8"/><rect class="bit" x="614" y="62" width="8" height="8"/><rect class="bit" x="622" y="62" width="8" height="8"/><rect x="680" y="40" width="36" height="36"/><rect class="bit" x="702" y="46" width="8" height="8"/><rect class="bit" x="694" y="54" width="8" height="8"/><rect class="bit" x="702" y="62" width="8" height="8"/><rect x="760" y="40" width="36" height="36"/><rect class="bit" x="782" y="46" width="8" height="8"/><rect class="bit" x="766" y="54" width="8" height="8"/><rect class="bit" x="782" y="54" width="8" height="8"/><rect class="bit" x="766" y="62" width="8" height="8"/><rect class="bit" x="782" y="62" width="8" height="8"/><rect x="840" y="40" width="36" height="36"/><rect class="bit" x="846" y="54" width="8" height="8"/><rect class="bit" x="862" y="54" width="8" height="8"/><rect class="bit" x="846" y="62" width="8" height="8"/><rect class="bit" x="862" y="62" width="8" height="8"/><rect x="920" y="40" width="36" height="36"/><rect class="bit" x="926" y="46" width="8" height="8"/><rect class="bit" x="926" y="54" width="8" height="8"/><rect class="bit" x="942" y="54" width="8" height="8"/><rect class="bit" x="934" y="62" width="8" height="8"/><rect x="0" y="80" width="36" height="36"/><rect class="bit" x="6" y="86" width="8" height="8"/><rect class="bit" x="14" y="86" width="8" height="8"/><rect class="bit" x="22" y="86" width="8" height="8"/><rect class="bit" x="14" y="94" width="8" height="8"/><rect class="bit" x="6" y="102" width="8" height="8"/><rect class="bit" x="22" y="102" width="8" height="8"/><rect x="80" y="80" width="36" height="36"/><rect class="bit" x="102" y="86" width="8" height="8"/><rect class="bit" x="86" y="94" width="8" height="8"/><rect class="bit" x="94" y="94" width="8" height="8"/><rect class="bit" x="102" y="94" width="8" height="8"/><rect x="160" y="80" width="36" height="36"/><rect class="bit" x="174" y="86" width="8" height="8"/><rect class="bit" x="166" y="102" width="8" height="8"/><rect x="240" y="80" width="36" height="36"/><rect class="bit" x="246" y="86" width="8" height="8"/><rect class="bit" x="254" y="102" width="8" height="8"/><rect class="bit" x="262" y="102" width="8" height="8"/><rect x="320" y="80" width="36" height="36"/><rect class="bit" x="334" y="86" width="8" height="8"/><rect class="bit" x="342" y="86" width="8" height="8"/><rect class="bit" x="334" y="102" width="8" height="8"/><rect class="bit" x="342" y="102" width="8" height="8"/><rect x="400" y="80" width="36" height="36"/><rect class="bit" x="414" y="86" width="8" height="8"/><rect class="bit" x="422" y="86" width="8" height="8"/><rect class="bit" x="406" y="94" width="8" height="8"/><rect class="bit" x="414" y="94" width="8" height="8"/><rect class="bit" x="422" y="102" width="8" height="8"/><rect x="480" y="80" width="36" height="36"/><rect class="bit" x="486" y="86" width="8" height="8"/><rect class="bit" x="494" y="86" width="8" height="8"/><rect class="bit" x="494" y="94" width="8" height="8"/><rect class="bit" x="486" y="102" width="8" height="8"/><rect x="560" y="80" width="36" height="36"/><rect class="bit" x="574" y="86" width="8" height="8"/><rect class="bit" x="574" y="94" width="8" height="8"/><rect class="bit" x="582" y="102" width="8" height="8"/><rect x="640" y="80" width="36" height="36"/><rect class="bit" x="646" y="94" width="8" height="8"/><rect class="bit" x="654" y="94" width="8" height="8"/><rect class="bit" x="662" y="94" width="8" height="8"/><rect class="bit" x="662" y="102" width="8" height="8"/><rect x="720" y="80" width="36" height="36"/><rect class="bit" x="742" y="86" width="8" height="8"/><rect class="bit" x="742" y="102" width="8" height="8"/><rect x="800" y="80" width="36" height="36"/><rect class="bit" x="814" y="94" width="8" height="8"/><rect class="bit" x="806" y="102" width="8" height="8"/><rect x="880" y="80" width="36" height="36"/><rect class="bit" x="894" y="86" width="8" height="8"/><rect class="bit" x="894" y="102" width="8" height="8"/></svg>
+  </div>
+  <div class="footer-cols">
+    <div><p class="foot-head">Paper</p><p>Manuscript in preparation</p></div>
+    <div><p class="foot-head">Code</p><p>Released with the paper</p></div>
+    <div><p class="foot-head">Data</p><p><a class="link-plain" href="https://bop.felk.cvut.cz/datasets/">LINEMOD and LM-O, BOP benchmark</a></p></div>
+    <div class="contact"><p class="foot-head">Contact</p><p><a class="link-plain" href="mailto:sunghokim@yu.ac.kr">sunghokim@yu.ac.kr</a></p><p>Advanced Visual Intelligence Lab, Yeungnam University, Gyeongsan, Republic of Korea</p></div>
+  </div>
+  <div class="footer-last">
+    <p class="small">© 2026 Md Selim Sarowar and Sungho Kim</p>
+    <a class="cell-small" href="#top">Back to the top</a>
+  </div>
+</footer>
 
-<div class="ai-lightbox" id="ai-lightbox" role="dialog" aria-modal="true" aria-label="Enlarged figure">
-  <button class="ai-lightbox-close" id="ai-lightbox-close" aria-label="Close">&times;</button>
-  <img id="ai-lightbox-img" src="" alt="">
-  <p class="ai-lightbox-caption" id="ai-lightbox-caption"></p>
-</div>
-
+<script src="static/js/page.js" defer></script>
 </body>
 </html>

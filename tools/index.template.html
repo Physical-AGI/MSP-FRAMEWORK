@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pose-posterior grasp planning</title>
+<meta name="description" content="A pose estimate that passes the accuracy test can still drop the object. Planning grasps on a pose posterior built from the estimator's own errors lifts it: top-1 grasp success {{PointTop}} to {{PostTop}} on LM-Grasp, level with the annotated pose.">
+<meta property="og:title" content="Pose-posterior grasp planning">
+<meta property="og:description" content="Top-1 grasp success {{PointTop}} to {{PostTop}}, level with the annotated pose ({{GtTop}}).">
+<meta property="og:image" content="static/video/rollout_pair.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/css/page.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<header class="board top" id="top">
+  <a class="tile mark" href="#top" aria-label="Back to the top">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="0" y="0" width="19" height="19"/><rect x="21" y="21" width="19" height="19"/><rect x="21" y="0" width="19" height="19" class="mark-light"/><rect x="0" y="21" width="19" height="19" class="mark-light"/></svg>
+  </a>
+  <nav class="tile links" aria-label="Sections">
+    <a class="link" href="#results">Results</a>
+    <a class="link" href="#scenes">Scenes</a>
+    <a class="link" href="#method">Method</a>
+    <a class="link" href="#gallery">Gallery</a>
+  </nav>
+  <a class="tile action" href="#scenes">Explore the scenes</a>
+</header>
+
+<main>
+<section class="board hero" aria-labelledby="title">
+  <div class="tile name">
+    <p class="authors">Md Selim Sarowar and Sungho Kim<br>Advanced Visual Intelligence Lab, Yeungnam University</p>
+    <div>
+      <h1 id="title">Pose-posterior grasp planning</h1>
+      <p class="what">Robot grasps planned on where an object could be, not on one pose estimate.</p>
+    </div>
+  </div>
+  <figure class="tile photo shutter">
+    <img src="static/img/gallery/lmo_{{TeaserFrame}}_boxes.jpg" width="960" height="720" alt="A cluttered LM-O test image with the FoundationPose estimate of every object as an orange box and sixteen posterior samples as teal boxes.">
+  </figure>
+  <figure class="tile photo clip">
+    <video src="static/video/rollout_pair.webm" poster="static/video/rollout_pair.jpg" autoplay muted loop playsinline width="968" height="480" aria-label="MuJoCo rollout of the same driller: on the left the grasp planned on the point estimate drops it, on the right the grasp planned on the posterior lifts it."></video>
+    <figcaption><span class="tag tag-point">Point estimate</span><span class="tag tag-post">Posterior</span></figcaption>
+  </figure>
+  <div class="pair">
+    <p class="tile dark statement">A pose that passes the accuracy test can still drop the object. Planning on a pose posterior lifts it.</p>
+    <p class="tile accent statement">Top-1 grasp success {{PointTop}} to {{PostTop}}, level with the annotated pose ({{GtTop}}).</p>
+  </div>
+</section>
+
+<section class="section stats" id="results" aria-labelledby="stats-title">
+  <h2 id="stats-title" class="head wrap" data-reveal>Small errors, lost grasps</h2>
+  <div class="mosaic">
+    <figure class="mosaic-photo" data-reveal>
+      <img src="static/img/teaser_story.jpg" width="1200" height="1170" loading="lazy" alt="One LM-O driller. Top: the FoundationPose estimate, 4 percent of the diameter off, and its grasp, which drops the driller in MuJoCo. Bottom: sixteen posterior samples and the grasp they choose, which lifts it.">
+    </figure>
+    <div class="figure-tile dark" data-reveal style="--i:1">
+      <p class="figure">{{BinHiPosterior}}</p>
+      <p class="figure-caption">success where the estimate is off by 5 to 10% of the object's diameter, against {{BinHiPoint}} on the point estimate</p>
+    </div>
+    <div class="figure-tile accent" data-reveal style="--i:2">
+      <p class="figure">{{PostCertPrec}}</p>
+      <p class="figure-caption">of certified grasps succeed, against {{PointCertPrec}} when planning on the point estimate</p>
+    </div>
+  </div>
+</section>
+
+<section class="section showcase" id="scenes" aria-labelledby="scenes-title">
+  <div class="plate" data-reveal>
+    <svg id="scene" viewBox="0 0 640 480" role="img" aria-labelledby="scene-caption">
+      <image id="scene-image" href="static/data/scenes/{{FirstScene}}.jpg" width="640" height="480"/>
+      <g id="scene-boxes"></g>
+      <g id="scene-grasps"></g>
+    </svg>
+  </div>
+  <div class="side">
+    <div class="tabs" role="tablist" aria-label="What the scene shows">
+      <button role="tab" aria-selected="true" data-mode="point">Point estimate</button>
+      <button role="tab" aria-selected="false" data-mode="posterior">Posterior</button>
+      <button role="tab" aria-selected="false" data-mode="annotation">Annotation</button>
+    </div>
+    <div class="side-text">
+      <h2 id="scenes-title" class="head" data-reveal>Unseen clutter</h2>
+      <p id="scene-caption" class="lead" aria-live="polite">LM-O test frames, never used for tuning. Over all {{LmoInst}} objects the posterior grasp lifts {{LmoPostTop}}, the point-estimate grasp {{LmoPointTop}}.</p>
+      <p id="scene-count" class="small muted"></p>
+    </div>
+    <div class="cells">
+      <button class="cell cell-ink" data-step="-1">Previous scene</button>
+      <button class="cell cell-tone" data-step="1">Next scene</button>
+    </div>
+  </div>
+</section>
+
+<section class="section method" id="method" aria-labelledby="method-title">
+  <div class="method-intro wrap">
+    <h2 id="method-title" class="head" data-reveal>One pose, many poses</h2>
+    <p class="lead" data-reveal style="--i:1">The estimator stays frozen. Its own measured errors become the uncertainty. <a class="link-plain" href="static/img/fig2_method.jpg">Open the full figure</a></p>
+  </div>
+  <div class="accordion" data-reveal style="--i:2">
+{{STAGES}}
+  </div>
+</section>
+
+<section class="section proof" id="table" aria-labelledby="table-title">
+  <h2 id="table-title" class="stepped wrap" data-reveal><span>Every method,</span><span>one table</span></h2>
+  <div class="table-wrap wrap" data-reveal style="--i:1">
+    <table>
+      <caption class="small muted">LM-Grasp test split, {{NTest}} scenes. Top-1: success of the chosen grasp. AUC: ranking within a scene. Sel@25%: success on the most confident quarter of scenes. Cert.: certified fraction and precision at α = 0.1. Mean ± s.d. over training seeds.</caption>
+      <thead><tr><th scope="col">Method</th><th scope="col">n</th><th scope="col">Top-1</th><th scope="col">AUC</th><th scope="col">Sel@25%</th><th scope="col">Cert.</th></tr></thead>
+{{TABLE}}
+    </table>
+  </div>
+  <div class="charts">
+    <figure data-reveal><img src="static/img/fig3_pose_gap.png" width="2131" height="640" loading="lazy" alt="Grasp success falls as the pose error grows while the ADD(-S) pass rate stays high; binned by FoundationPose error, the posterior planner tracks the annotated pose."><figcaption class="small">Pose error against grasp success</figcaption></figure>
+    <figure data-reveal style="--i:1"><img src="static/img/fig4_results.png" width="2131" height="640" loading="lazy" alt="Top-1 success of every method, success on the most confident scenes, and conformal certificates."><figcaption class="small">Every method, and when to act</figcaption></figure>
+    <figure data-reveal style="--i:2"><img src="static/img/fig5_analysis.png" width="2131" height="640" loading="lazy" alt="Calibration of the posterior in rotation and translation, and the gain from a second view of the least confident scenes."><figcaption class="small">Calibration and a second view</figcaption></figure>
+  </div>
+</section>
+
+<section class="section gallery" id="gallery" aria-labelledby="gallery-title">
+  <div class="gallery-head wrap">
+    <h2 id="gallery-title" class="head" data-reveal>Scenes and rollouts</h2>
+    <p class="statement-small" data-reveal style="--i:1">Estimates in orange, posterior samples in teal, annotations dashed. Renders are MuJoCo rollouts of the chosen grasps.</p>
+  </div>
+  <div class="sheet wrap">
+{{GALLERY}}
+  </div>
+</section>
+</main>
+
+<footer class="footer" aria-labelledby="footer-title">
+  <h2 id="footer-title" class="sr-only">Paper, code and contact</h2>
+  <div class="blocks" aria-hidden="true">
+{{BLOCKS}}
+  </div>
+  <div class="footer-cols">
+    <div><p class="foot-head">Paper</p><p>Manuscript in preparation</p></div>
+    <div><p class="foot-head">Code</p><p>Released with the paper</p></div>
+    <div><p class="foot-head">Data</p><p><a class="link-plain" href="https://bop.felk.cvut.cz/datasets/">LINEMOD and LM-O, BOP benchmark</a></p></div>
+    <div class="contact"><p class="foot-head">Contact</p><p><a class="link-plain" href="mailto:sunghokim@yu.ac.kr">sunghokim@yu.ac.kr</a></p><p>Advanced Visual Intelligence Lab, Yeungnam University, Gyeongsan, Republic of Korea</p></div>
+  </div>
+  <div class="footer-last">
+    <p class="small">© 2026 Md Selim Sarowar and Sungho Kim</p>
+    <a class="cell-small" href="#top">Back to the top</a>
+  </div>
+</footer>
+
+<script src="static/js/page.js" defer></script>
+</body>
+</html>

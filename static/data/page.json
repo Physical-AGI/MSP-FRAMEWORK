@@ -1,0 +1,791 @@
+{
+ "numbers": {
+  "NScenes": "15,800",
+  "NTrain": "8,942",
+  "NVal": "1,679",
+  "NCalib": "2,600",
+  "NTest": "2,579",
+  "NRollouts": "252,800",
+  "TestBase": "0.266",
+  "TestExec": "0.381",
+  "TestOracle": "0.877",
+  "NMixed": "2,261",
+  "UprightDegLo": "0.6",
+  "UprightDegHi": "1.4",
+  "FpAdd": "0.997",
+  "FpRotErr": "1.9",
+  "FpTransErr": "4.4",
+  "FpSec": "0.57",
+  "PointTop": "0.791",
+  "PointAuc": "0.935",
+  "PointSel": "0.902",
+  "PointSixFourTop": "0.814",
+  "PointSixFourAuc": "0.951",
+  "PointSixFourSel": "0.919",
+  "PostTop": "0.859",
+  "PostAuc": "0.987",
+  "PostSel": "0.988",
+  "PostBTop": "0.861",
+  "PostBAuc": "0.988",
+  "PostBSel": "0.995",
+  "TwoViewTop": "0.865",
+  "TwoViewAuc": "0.993",
+  "TwoViewSel": "0.997",
+  "GtTop": "0.856",
+  "GtAuc": "0.990",
+  "GtSel": "0.984",
+  "GaussTop": "0.849",
+  "GaussAuc": "0.981",
+  "GaussSel": "0.981",
+  "ObjTop": "0.857",
+  "ObjAuc": "0.985",
+  "ObjSel": "0.988",
+  "XoTop": "0.854",
+  "XoAuc": "0.986",
+  "XoSel": "0.981",
+  "PointCertFrac": "0.844",
+  "PointCertPrec": "0.904",
+  "PointCertCov": "0.918",
+  "PostCertFrac": "0.849",
+  "PostCertPrec": "0.972",
+  "PostCertCov": "0.923",
+  "GtCertFrac": "0.854",
+  "GtCertPrec": "0.974",
+  "GtCertCov": "0.929",
+  "CmpPostPointSixFour": "+0.045",
+  "CmpPostPointSixFourCi": "[+0.036, +0.054]",
+  "CmpPostPointSixFourAbs": "0.045",
+  "CmpPostPoint": "+0.068",
+  "CmpPostPointCi": "[+0.058, +0.079]",
+  "CmpPostPointAbs": "0.068",
+  "CmpPostGauss": "+0.010",
+  "CmpPostGaussCi": "[+0.005, +0.017]",
+  "CmpPostGaussAbs": "0.010",
+  "CmpPostObj": "+0.002",
+  "CmpPostObjCi": "[−0.003, +0.007]",
+  "CmpPostObjAbs": "0.002",
+  "CmpGtPost": "−0.003",
+  "CmpGtPostCi": "[−0.009, +0.003]",
+  "CmpGtPostAbs": "0.003",
+  "CmpPostXo": "+0.005",
+  "CmpPostXoCi": "[0.000, +0.010]",
+  "CmpPostXoAbs": "0.005",
+  "CmpXoPointSixFour": "+0.040",
+  "CmpXoPointSixFourCi": "[+0.031, +0.049]",
+  "CmpXoPointSixFourAbs": "0.040",
+  "CmpTwoViewPost": "+0.006",
+  "CmpTwoViewPostCi": "[+0.003, +0.010]",
+  "CmpTwoViewPostAbs": "0.006",
+  "CmpPoiseUPoise": "+0.038",
+  "CmpPoiseUPoiseCi": "[+0.030, +0.046]",
+  "CmpPoiseUPoiseAbs": "0.038",
+  "CmpPoiseUPost": "0.000",
+  "CmpPoiseUPostCi": "[−0.003, +0.003]",
+  "CmpPoiseUPostAbs": "0.000",
+  "CmpGtPoint": "+0.065",
+  "CmpGtPointCi": "[+0.055, +0.076]",
+  "CmpGtPointAbs": "0.065",
+  "CmpGaussPointSixFour": "+0.035",
+  "CmpGaussPointSixFourCi": "[+0.026, +0.043]",
+  "CmpGaussPointSixFourAbs": "0.035",
+  "CmpObjPointSixFour": "+0.043",
+  "CmpObjPointSixFourCi": "[+0.034, +0.052]",
+  "CmpObjPointSixFourAbs": "0.043",
+  "CmpPointSixFourPoint": "+0.023",
+  "CmpPointSixFourPointCi": "[+0.016, +0.031]",
+  "CmpPointSixFourPointAbs": "0.023",
+  "CmpPostGt": "+0.003",
+  "CmpPostGtCi": "[−0.003, +0.009]",
+  "CmpPostGtAbs": "0.003",
+  "GqTop": "0.637",
+  "GqSel": "0.902",
+  "DirectTop": "0.683",
+  "DirectSel": "0.929",
+  "EnsTop": "0.705",
+  "EnsSel": "0.938",
+  "PoiseTop": "0.821",
+  "PoiseSel": "0.963",
+  "PoiseUTop": "0.859",
+  "PoiseUSel": "0.985",
+  "RegrTop": "0.707",
+  "RegrSel": "0.817",
+  "LatDirect": "3.7",
+  "LatEns": "20.7",
+  "BinLoN": "917",
+  "BinLoPoint": "0.827",
+  "BinLoPosterior": "0.864",
+  "BinLoAnnotated": "0.858",
+  "BinMidN": "1,469",
+  "BinMidPoint": "0.770",
+  "BinMidPosterior": "0.841",
+  "BinMidAnnotated": "0.840",
+  "BinHiN": "186",
+  "BinHiPoint": "0.796",
+  "BinHiPosterior": "0.984",
+  "BinHiAnnotated": "0.984",
+  "NDiffer": "730",
+  "NWins": "185",
+  "NLosses": "9",
+  "CalKnnRotNine": "0.866",
+  "CalKnnTransNine": "0.841",
+  "CalKnnRotFive": "0.506",
+  "CalKnnTransFive": "0.447",
+  "RhoKnnRot": "0.40",
+  "RhoKnnTrans": "0.65",
+  "CalObjRotNine": "0.863",
+  "CalObjTransNine": "0.845",
+  "CalObjRotFive": "0.519",
+  "CalObjTransFive": "0.450",
+  "RhoObjRot": "0.32",
+  "RhoObjTrans": "0.38",
+  "CalGaussRotNine": "0.924",
+  "CalGaussTransNine": "0.687",
+  "CalGaussRotFive": "0.485",
+  "CalGaussTransFive": "0.319",
+  "RhoGaussRot": "0.24",
+  "RhoGaussTrans": "0.25",
+  "CalXoRotNine": "0.848",
+  "CalXoTransNine": "0.807",
+  "CalXoRotFive": "0.488",
+  "CalXoTransFive": "0.440",
+  "RhoXoRot": "0.10",
+  "RhoXoTrans": "0.44",
+  "CpuPoint": "0.7",
+  "CpuPost": "10.3",
+  "CpuTwoView": "20.5",
+  "SvViewDeg": "29",
+  "SvRate": "22",
+  "SvGain": "+0.004",
+  "SvGainCi": "[+0.001, +0.007]",
+  "SvVsDouble": "+0.003",
+  "SvVsDoubleCi": "[0.000, +0.006]",
+  "SvAllGain": "+0.006",
+  "SvAllGainCi": "[+0.003, +0.010]",
+  "NoiseRotFiveTop": "0.809",
+  "NoiseRotFiveAdd": "1.000",
+  "NoiseTransFiveTop": "0.759",
+  "NoiseTransFiveAdd": "0.951",
+  "NoiseRotTenTop": "0.761",
+  "NoiseRotTenAdd": "0.970",
+  "NoiseTransTenTop": "0.682",
+  "NoiseTransTenAdd": "0.677",
+  "LmoInst": "1,474",
+  "LmoFrames": "200",
+  "LmoUpright": "0.558",
+  "LmoPointTop": "0.683",
+  "LmoPointSel": "0.861",
+  "LmoPostTop": "0.750",
+  "LmoPostSel": "0.959",
+  "LmoGtTop": "0.784",
+  "LmoGtSel": "0.970",
+  "LmoCmp": "+0.067",
+  "LmoCmpCi": "[+0.053, +0.081]",
+  "LmoGtMinusPost": "+0.034",
+  "LmoGtMinusPostCi": "[+0.021, +0.047]",
+  "LmoGtMinusPostAbs": "0.034",
+  "LmoRecovered": "66",
+  "LmoUpPointTop": "0.765",
+  "LmoUpPointSel": "0.840",
+  "LmoUpPostTop": "0.825",
+  "LmoUpPostSel": "0.942",
+  "LmoUpGtTop": "0.864",
+  "LmoUpGtSel": "0.971",
+  "LmoUpCmp": "+0.060",
+  "LmoUpCmpCi": "[+0.041, +0.079]",
+  "LmoUpGtMinusPost": "+0.039",
+  "LmoUpGtMinusPostCi": "[+0.021, +0.057]",
+  "LmoUpGtMinusPostAbs": "0.039",
+  "LmoUpRecovered": "60"
+ },
+ "table": [
+  {
+   "group": "Learned outcome scorers (no object model)",
+   "rows": [
+    {
+     "cells": [
+      "Dex-Net 2.0 architecture",
+      "5",
+      "0.637 ± 0.013",
+      "0.829",
+      "0.902",
+      "0.611 / 0.831"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "RGB-D outcome scorer",
+      "5",
+      "0.683 ± 0.006",
+      "0.876",
+      "0.929",
+      "0.647 / 0.857"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "Deep ensemble of 5",
+      "3",
+      "0.705 ± 0.006",
+      "0.891",
+      "0.938",
+      "0.664 / 0.884"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    }
+   ]
+  },
+  {
+   "group": "Learned fusion with the planner score",
+   "rows": [
+    {
+     "cells": [
+      "POISE (scorer + point score)",
+      "5",
+      "0.821 ± 0.002",
+      "0.958",
+      "0.963",
+      "0.874 / 0.927"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "POISE-U (scorer + posterior score)",
+      "5",
+      "0.859 ± 0.002",
+      "0.988",
+      "0.985",
+      "0.851 / 0.972"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      true,
+      false,
+      true
+     ],
+     "ours": false
+    }
+   ]
+  },
+  {
+   "group": "Pose-then-plan (mesh, simulator and physics prior at decision time)",
+   "rows": [
+    {
+     "cells": [
+      "Pose regressor + planner",
+      "5",
+      "0.707 ± 0.007",
+      "0.859",
+      "0.817",
+      "–"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "FoundationPose + planner",
+      "1",
+      "0.791",
+      "0.935",
+      "0.902",
+      "0.844 / 0.904"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "FoundationPose + planner, 64 draws",
+      "1",
+      "0.814",
+      "0.951",
+      "0.919",
+      "–"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "Pose posterior (ours)",
+      "1",
+      "0.859",
+      "0.987",
+      "0.988",
+      "0.849 / 0.972"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+     ],
+     "second": [
+      false,
+      false,
+      true,
+      false,
+      true,
+      false
+     ],
+     "ours": true
+    },
+    {
+     "cells": [
+      "+ second view (ours)",
+      "1",
+      "0.865",
+      "0.993",
+      "0.997",
+      "–"
+     ],
+     "best": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": true
+    }
+   ]
+  },
+  {
+   "group": "Privileged references",
+   "rows": [
+    {
+     "cells": [
+      "Annotated pose + planner",
+      "1",
+      "0.856",
+      "0.990",
+      "0.984",
+      "0.854 / 0.974"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    },
+    {
+     "cells": [
+      "Oracle (best candidate)",
+      "1",
+      "0.877",
+      "–",
+      "–",
+      "–"
+     ],
+     "best": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "second": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     "ours": false
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "frame": 652,
+   "objects": 7,
+   "point": 5,
+   "posterior": 6
+  },
+  {
+   "frame": 3,
+   "objects": 8,
+   "point": 7,
+   "posterior": 7
+  },
+  {
+   "frame": 47,
+   "objects": 8,
+   "point": 2,
+   "posterior": 5
+  },
+  {
+   "frame": 61,
+   "objects": 8,
+   "point": 4,
+   "posterior": 6
+  },
+  {
+   "frame": 97,
+   "objects": 7,
+   "point": 6,
+   "posterior": 5
+  },
+  {
+   "frame": 102,
+   "objects": 8,
+   "point": 6,
+   "posterior": 7
+  },
+  {
+   "frame": 162,
+   "objects": 8,
+   "point": 4,
+   "posterior": 4
+  },
+  {
+   "frame": 224,
+   "objects": 8,
+   "point": 5,
+   "posterior": 6
+  },
+  {
+   "frame": 283,
+   "objects": 8,
+   "point": 3,
+   "posterior": 5
+  },
+  {
+   "frame": 368,
+   "objects": 8,
+   "point": 5,
+   "posterior": 5
+  },
+  {
+   "frame": 438,
+   "objects": 8,
+   "point": 5,
+   "posterior": 6
+  },
+  {
+   "frame": 491,
+   "objects": 8,
+   "point": 4,
+   "posterior": 7
+  },
+  {
+   "frame": 494,
+   "objects": 8,
+   "point": 5,
+   "posterior": 6
+  },
+  {
+   "frame": 543,
+   "objects": 7,
+   "point": 5,
+   "posterior": 5
+  },
+  {
+   "frame": 615,
+   "objects": 7,
+   "point": 6,
+   "posterior": 6
+  },
+  {
+   "frame": 691,
+   "objects": 6,
+   "point": 4,
+   "posterior": 4
+  },
+  {
+   "frame": 750,
+   "objects": 8,
+   "point": 4,
+   "posterior": 6
+  },
+  {
+   "frame": 770,
+   "objects": 7,
+   "point": 5,
+   "posterior": 6
+  },
+  {
+   "frame": 808,
+   "objects": 8,
+   "point": 6,
+   "posterior": 6
+  },
+  {
+   "frame": 867,
+   "objects": 7,
+   "point": 5,
+   "posterior": 5
+  },
+  {
+   "frame": 909,
+   "objects": 7,
+   "point": 7,
+   "posterior": 7
+  },
+  {
+   "frame": 972,
+   "objects": 6,
+   "point": 6,
+   "posterior": 6
+  },
+  {
+   "frame": 1069,
+   "objects": 7,
+   "point": 5,
+   "posterior": 6
+  },
+  {
+   "frame": 1144,
+   "objects": 7,
+   "point": 4,
+   "posterior": 5
+  }
+ ],
+ "gallery": [
+  {
+   "src": "static/img/gallery/lmo_000652_boxes.jpg",
+   "caption": "LM-O frame 652, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000652_cloud.jpg",
+   "caption": "LM-O frame 652, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_000047_boxes.jpg",
+   "caption": "LM-O frame 47, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000047_cloud.jpg",
+   "caption": "LM-O frame 47, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_000491_boxes.jpg",
+   "caption": "LM-O frame 491, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000491_cloud.jpg",
+   "caption": "LM-O frame 491, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_000097_boxes.jpg",
+   "caption": "LM-O frame 97, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000097_cloud.jpg",
+   "caption": "LM-O frame 97, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_000003_boxes.jpg",
+   "caption": "LM-O frame 3, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000003_cloud.jpg",
+   "caption": "LM-O frame 3, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_000368_boxes.jpg",
+   "caption": "LM-O frame 368, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000368_cloud.jpg",
+   "caption": "LM-O frame 368, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_000750_boxes.jpg",
+   "caption": "LM-O frame 750, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_000750_cloud.jpg",
+   "caption": "LM-O frame 750, depth"
+  },
+  {
+   "src": "static/img/gallery/lmo_001069_boxes.jpg",
+   "caption": "LM-O frame 1069, boxes"
+  },
+  {
+   "src": "static/img/gallery/lmo_001069_cloud.jpg",
+   "caption": "LM-O frame 1069, depth"
+  },
+  {
+   "src": "static/img/gallery/lamp_point_0.jpg",
+   "caption": "Lamp, point-estimate grasp at the estimate: lifted"
+  },
+  {
+   "src": "static/img/gallery/lamp_point_1.jpg",
+   "caption": "Lamp, point-estimate grasp at pose sample 1: lifted"
+  },
+  {
+   "src": "static/img/gallery/lamp_point_2.jpg",
+   "caption": "Lamp, point-estimate grasp at pose sample 2: dropped"
+  },
+  {
+   "src": "static/img/gallery/lamp_point_3.jpg",
+   "caption": "Lamp, point-estimate grasp at pose sample 4: dropped"
+  },
+  {
+   "src": "static/img/gallery/lamp_posterior_0.jpg",
+   "caption": "Lamp, posterior grasp at the estimate: lifted"
+  },
+  {
+   "src": "static/img/gallery/lamp_posterior_1.jpg",
+   "caption": "Lamp, posterior grasp at pose sample 1: lifted"
+  },
+  {
+   "src": "static/img/gallery/lamp_posterior_2.jpg",
+   "caption": "Lamp, posterior grasp at pose sample 2: lifted"
+  },
+  {
+   "src": "static/img/gallery/lamp_posterior_3.jpg",
+   "caption": "Lamp, posterior grasp at pose sample 4: lifted"
+  }
+ ],
+ "teaser_frame": 652
+}
