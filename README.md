@@ -1,8 +1,9 @@
-# Grasp planning on a pose posterior
+# Pose-posterior grasp planning
 
 Project page for **Planning on a residual-based pose posterior closes the grasp-success gap
 between estimated and annotated object poses** (Md Selim Sarowar and Sungho Kim, Advanced Visual
-Intelligence Lab, Yeungnam University). Manuscript in preparation; code released with the paper.
+Intelligence Lab, Yeungnam University). Under review at Scientific Reports; code at
+<https://github.com/s-elim/msp-framework>.
 
 Live at <https://physical-agi.github.io/MSP-FRAMEWORK/>.
 
